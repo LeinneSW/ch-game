@@ -1,0 +1,187 @@
+@font-face{
+    font-family: "Pretendard-Regular";
+    src: url("https://fastly.jsdelivr.net/gh/Project-Noonnu/noonfonts_2107@1.1/Pretendard-Regular.woff") format("woff");
+    font-weight: 400;
+    font-style: normal;
+}
+
+*{
+    font-family: "Pretendard-Regular", sans-serif;
+    box-sizing: border-box;
+}
+
+body{
+    margin: 0;
+    font-family: system-ui, sans-serif;
+    background: #78d4b0;
+}
+
+.wrap{
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 32px;
+    text-align: center;
+}
+
+.grid{
+    display: grid;
+    grid-template-columns:repeat(auto-fit, minmax(180px, 1fr));
+    gap: 16px;
+}
+
+.card{
+    position: relative;
+    background: #fff4;
+    border-radius: 16px;
+    padding: 20px;
+    cursor: pointer;
+    transition: .2s
+}
+
+.card:hover{
+    transform: translateY(-4px);
+    background: #fff8;
+}
+
+.card .del-btn{
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    width: 24px;
+    height: 24px;
+    border: 0;
+    border-radius: 50%;
+    background: #ff5959;
+    color: #fff;
+    font-weight: 700;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.card .del-btn:hover{
+    background: #c53636;
+}
+
+.file-btn{
+    display: inline-block;
+    padding: 8px 16px;
+    border-radius: 8px;
+    background: #5e8bff;
+    color: #fff;
+    cursor: pointer
+}
+
+.game-layout{
+    display: flex;
+    height: 100vh
+}
+
+.side{
+    width: 360px;
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    background: #6ecaa1;
+}
+
+/* 왼쪽 패널 공통 테두리‧둥근 모서리 */
+.panel{
+    flex: none;
+    height: 33.333%;
+    border: 4px solid #000;
+    border-radius: 24px;
+    padding: 12px;
+    box-sizing: border-box;
+    background: #202020;
+    display: flex;
+    flex-direction: column;
+}
+
+/* 오른쪽 큰 보드 둥근 모서리 */
+.board{
+    flex: 1;
+    margin-left: 16px;
+    border: 4px solid #000;
+    border-radius: 48px;
+    position: relative;
+    background: #f5f5f5;
+}
+
+/* 주제 영역은 보드 안 좌상단 */
+.board-header{
+    position: absolute;
+    top: 20px;
+    left: 24px;
+}
+
+.board-center{
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 24px;
+}
+
+#chosung-box{
+    display: flex;
+    gap: 8px;
+    list-style: none;
+    margin: 0;
+    padding: 0
+}
+
+#chosung-box li{
+    width: 64px;
+    height: 64px;
+    border: 4px solid #5e8bff;
+    color: #5e8bff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2rem;
+    font-weight: 700;
+    border-radius: 8px
+}
+
+/* 홈 버튼 */
+.home-btn{
+    position: absolute;
+    top: 16px;
+    left: 16px;
+    z-index: 10;
+    padding: 6px 14px;
+    border: 0;
+    border-radius: 8px;
+    background: #5e8bff;
+    color: #fff;
+    cursor: pointer;
+    font-size: .95rem;
+}
+.home-btn:hover{
+    opacity: .9;
+}
+
+/* 스크롤바 트랙 (배경) */
+::-webkit-scrollbar-track{
+    background: transparent;
+}
+
+/* 스크롤바 움직이는 부분 (thumb) */
+::-webkit-scrollbar-thumb{
+    background-color: rgba(200, 200, 200, 0.4); /* 밝은 회색 스크롤바 */
+}
+
+/* 스크롤바 모서리 (corner) 없애기 */
+::-webkit-scrollbar-corner{
+    background: transparent;
+}
+
+/* Firefox */
+html{
+    scrollbar-width: thin;
+    scrollbar-color: rgba(200, 200, 200, 0.4) transparent; /* thumb / track */
+}
