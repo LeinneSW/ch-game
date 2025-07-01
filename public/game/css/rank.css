@@ -1,9 +1,9 @@
-.graph{
-    flex: 0 0 80px;
+.rank-graph{
+    flex: 1;
     display: flex;
     align-items: flex-end;
-    gap: 4px;
-    height: 80px
+    gap: 8px;
+    padding: 20px;
 }
 
 .bar{

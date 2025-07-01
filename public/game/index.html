@@ -8,22 +8,22 @@
     <script type="module" src="js/logic.js"></script>
 </head>
 <body>
-<aside class="side">
+<aside class="side" style="flex: 1">
     <section id="rank-panel" class="panel">
-        <h3>순위</h3>
-        <div id="rank-graph" class="graph"></div>
+        <div class="panel-title">순위</div>
+        <div id="rank-graph" class="rank-graph"></div>
     </section>
     <section id="message-panel" class="panel">
-        <h3>대화</h3>
+        <div class="panel-title">대화</div>
         <div id="message-list" class="message-list"></div>
     </section>
     <section id="answer-panel" class="panel">
-        <h3 id="answer-label">정답</h3>
-        <ul id="hint-list"></ul>
+        <div id="answer-label" class="panel-title">정답</div>
+        <ul id="hint-list" class="hint-list"></ul>
     </section>
 </aside>
 
-<section class="board">
+<section class="board" style="flex: 4">
     <!-- 상단: 주제 -->
     <div class="board-header">
         <h1 id="topic-title"></h1>
