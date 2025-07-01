@@ -5,6 +5,7 @@ export const getGameState = () => {
     try{
         return JSON.parse(sessionStorage.getItem(GAME_STATE_KEY));
     }catch{}
+    sessionStorage.removeItem(GAME_STATE_KEY)
 }
 
 export const setGameState = (state) => {

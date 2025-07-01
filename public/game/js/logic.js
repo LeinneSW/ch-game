@@ -100,14 +100,9 @@ function nextRound(){
 
 window.addEventListener('load', async () => {
     let channelId = getChannelId()
-    if(!channelId){
+    if(!channelId || !gameState){
         location.href = '/home/';
         return;
-    }
-
-    if(!gameState){
-        location.href = '/home/';
-        return
     }
 
     document.getElementById('next-btn').onclick = nextRound;
