@@ -1,10 +1,5 @@
 import {toChosung} from "./kor.js";
 
-const $roundInfo = document.getElementById('round-info');
-const $rankGraph = document.getElementById('rank-graph');
-const $answerLabel = document.getElementById('answer-label');
-const $nextBtn = document.getElementById('next-btn');
-
 const tier2ColorList = {};
 const cheatKeyColorList = {};
 
@@ -109,13 +104,25 @@ export const updateQuiz = (gameState) => {
     const currentHints = gameState.quiz.items[gameState.round].hints;
 
     // UI 초기화
-    const chosungList = document.getElementById('chosung-list');
-    const $hintBox = document.getElementById('hint-list');
-
-    $hintBox.innerHTML = '';
-    chosungList.innerHTML = '';
-    $answerLabel.innerText = currentWord;
+    const $roundInfo = document.getElementById('round-info');
     $roundInfo.textContent = `라운드 ${gameState.round + 1}`;
+
+    const $answerLabel = document.getElementById('answer-label');
+    $answerLabel.innerText = currentWord;
+
+    const hintBox = document.getElementById('hint-list');
+    hintBox.innerHTML = ''; // 기존 힌트 초기화
+    currentHints.forEach(h => {
+        const li = document.createElement('li');
+        li.textContent = h;
+        hintBox.appendChild(li);
+    });
+
+    const nextBtn = document.getElementById('next-btn');
+    nextBtn.hidden = !gameState.solved;
+
+    const chosungList = document.getElementById('chosung-list');
+    chosungList.innerHTML = ''; // 기존 단어 초기화
     toChosung(currentWord).forEach((cho, index) => {
         const li = document.createElement('li');
         li.className = 'chosung-item'
@@ -128,12 +135,6 @@ export const updateQuiz = (gameState) => {
         };
         chosungList.appendChild(li);
     });
-    currentHints.forEach(h => {
-        const li = document.createElement('li');
-        li.textContent = h;
-        $hintBox.appendChild(li);
-    });
-    $nextBtn.hidden = !gameState.solved;
 }
 
 export function updateRankGraph(scores){
@@ -142,7 +143,8 @@ export function updateRankGraph(scores){
         return;
     }
 
-    $rankGraph.innerHTML = '';
+    const rankGraph = document.getElementById('rank-graph');
+    rankGraph.innerHTML = '';
     for(const i of [1, 0, 2]){ // 2 1 3 순으로 출력
         const data = top[i]
         const bar = document.createElement('div');
@@ -152,7 +154,7 @@ export function updateRankGraph(scores){
             bar.innerHTML = `<span class="bar-score">${data.score}</span>
                 <span class="bar-name">${escapeHTML(data.profile.nickname)}</span>`;
         }
-        $rankGraph.appendChild(bar);
+        rankGraph.appendChild(bar);
     }
 }
 

@@ -73,7 +73,7 @@ function onQuizSolved(profile){
     gameState.solved = true;
     setGameState(gameState)
 
-    $nextBtn.hidden = false;
+    document.getElementById('next-btn').hidden = false;
     scores[profile.userIdHash] ??= {
         profile,
         score: 0
@@ -110,8 +110,7 @@ window.addEventListener('load', async () => {
         return
     }
 
-    const nextBtn = document.getElementById('next-btn');
-    nextBtn.onclick = nextRound;
+    document.getElementById('next-btn').onclick = nextRound;
     updateQuiz(gameState)
 
     const client = new ChzzkClient({
