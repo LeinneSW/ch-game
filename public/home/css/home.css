@@ -1,0 +1,49 @@
+.grid{
+    display: grid;
+    grid-template-columns:repeat(auto-fit, minmax(180px, 1fr));
+    gap: 16px;
+}
+
+.card{
+    position: relative;
+    background: #fff4;
+    border-radius: 16px;
+    padding: 20px;
+    cursor: pointer;
+    transition: .2s
+}
+
+.card:hover{
+    transform: translateY(-4px);
+    background: #fff8;
+}
+
+.card .del-btn{
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    width: 24px;
+    height: 24px;
+    border: 0;
+    border-radius: 50%;
+    background: #ff5959;
+    color: #fff;
+    font-weight: 700;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.card .del-btn:hover{
+    background: #c53636;
+}
+
+.file-btn{
+    display: inline-block;
+    padding: 8px 16px;
+    border-radius: 8px;
+    background: #5e8bff;
+    color: #fff;
+    cursor: pointer
+}

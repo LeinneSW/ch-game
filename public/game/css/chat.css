@@ -1,0 +1,43 @@
+:root{
+    --font-size: 16px;
+}
+
+.message-list{
+    flex: 1;
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
+.message-list *{
+    font-size: var(--font-size);
+}
+
+.message{
+    padding: 0 4px;
+    line-height: calc(var(--font-size) + 10px); /* 이모지 크기를 맞추기 위해 사용 */
+}
+.message:first-child{
+    margin-top: 4px;
+}
+.message:last-child{
+    margin-bottom: 4px;
+}
+
+.message *{
+    vertical-align: middle;
+}
+
+.message-badge{
+    margin-right: 3px;
+    width: var(--font-size);
+    height: var(--font-size);
+}
+
+.message-text{
+    color: #000;
+}
+
+.message-emoji{
+    width: calc(var(--font-size) + 8px);
+    height: calc(var(--font-size) + 8px);
+}

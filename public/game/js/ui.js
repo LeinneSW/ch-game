@@ -1,9 +1,7 @@
-import {toChosung} from "../utils.js";
+import {toChosung} from "./kor.js";
 
-const $chosungBox = document.getElementById('chosung-box');
 const $roundInfo = document.getElementById('round-info');
 const $rankGraph = document.getElementById('rank-graph');
-const $hintBox = document.getElementById('hint-list');
 const $answerLabel = document.getElementById('answer-label');
 const $nextBtn = document.getElementById('next-btn');
 
@@ -40,62 +38,60 @@ export const escapeHTML = (s) => {
     return s.replace(/[&<>"']/g, m => htmlEntity[m]);
 }
 
-export const addMessageBox = (profile, message, msecs = Date.now(), colorData = 'white', emojiList = {}, badgeList = []) => {
-    const chatBox = document.getElementById('chat-container');
-    const messageBoxDiv = document.createElement('div')
-    messageBoxDiv.id = msecs + ''
-    messageBoxDiv.dataset.userIdHash = profile.userIdHash
-    messageBoxDiv.className = 'message-box'
-    chatBox.appendChild(messageBoxDiv)
+export const addMessageBox = (profile, message, msecs = Date.now(), colorData = 'white', emojiList = {}) => {
+    const messageList = document.getElementById('message-list');
+    const messageDiv = document.createElement('div')
+    messageDiv.id = msecs + ''
+    messageDiv.dataset.userIdHash = profile.userIdHash
+    messageDiv.className = 'message'
+    messageList.appendChild(messageDiv)
 
-    const userSpan = document.createElement('span')
-    userSpan.className = 'nickname'
-    userSpan.textContent = profile.nickname
+    const nickSpan = document.createElement('span')
+    nickSpan.className = 'message-nickname'
+    nickSpan.textContent = profile.nickname
     if(typeof colorData === 'string'){
-        userSpan.style.color = colorData
+        nickSpan.style.color = colorData
     }else{
         switch(colorData.effectType){
             case 'GRADATION':
                 const direction = colorData.effectValue.direction.toLowerCase();
-                const startColor = colorData.darkRgbValue;
-                const endColor = colorData.effectValue.darkRgbEndValue;
-                userSpan.style.backgroundImage = `linear-gradient(to ${direction}, ${startColor}, ${endColor})`;
-                userSpan.style.backgroundClip = 'text';
-                userSpan.style.webkitBackgroundClip = 'text';
-                userSpan.style.color = 'transparent';
+                const startColor = colorData.lightRgbValue;
+                const endColor = colorData.effectValue.lightRgbEndValue;
+                nickSpan.style.backgroundImage = `linear-gradient(to ${direction}, ${startColor}, ${endColor})`;
+                nickSpan.style.backgroundClip = 'text';
+                nickSpan.style.webkitBackgroundClip = 'text';
+                nickSpan.style.color = 'transparent';
                 break;
             case 'HIGHLIGHT':
-                userSpan.style.color = colorData.darkRgbValue;
-                userSpan.style.backgroundColor = colorData.effectValue.darkRgbBackgroundValue;
+                nickSpan.style.color = colorData.lightRgbValue;
+                nickSpan.style.backgroundColor = colorData.effectValue.lightRgbBackgroundValue;
                 break;
             case 'STEALTH':
-                userSpan.style.color = 'transparent';
+                nickSpan.style.color = 'transparent';
                 break;
         }
     }
-    messageBoxDiv.appendChild(userSpan)
+    messageDiv.appendChild(nickSpan)
 
-    const messageSpan = document.createElement('span')
-    messageSpan.className = 'message'
+    const textSpan = document.createElement('span')
+    textSpan.className = 'message-text'
 
     message = escapeHTML(message)
     for(const emojiName in emojiList){
-        message = message.replaceAll(`{:${emojiName}:}`, `<img class='emoji' src='${emojiList[emojiName]}' alt="emoji">`)
+        message = message.replaceAll(`{:${emojiName}:}`, `<img class='message-emoji' src='${emojiList[emojiName]}' alt="emoji">`)
     }
-    messageSpan.innerHTML = ` : ${message}`
-    messageBoxDiv.appendChild(messageSpan)
+    textSpan.innerHTML = ` : ${message}`
+    messageDiv.appendChild(textSpan)
 
     const threshold = 10; // 오차 허용값 (px)
-    if(chatBox.scrollHeight - (chatBox.scrollTop + chatBox.clientHeight + messageBoxDiv.clientHeight) <= threshold){
-        chatBox.scrollTop = chatBox.scrollHeight;
+    if(messageList.scrollHeight - (messageList.scrollTop + messageList.clientHeight + messageDiv.clientHeight) <= threshold){
+        messageList.scrollTop = messageList.scrollHeight;
     }
 }
 
 export const clearChatBox = () => {
-    const chatBox = document.getElementById('chat-container');
-    while(chatBox.firstChild){
-        chatBox.removeChild(chatBox.firstChild);
-    }
+    const messageList = document.getElementById('message-list');
+    messageList.innerHTML = '';
 }
 
 export const convertColorCode = (colorCode, userId, chatChannelId) => {
@@ -106,24 +102,31 @@ export const convertColorCode = (colorCode, userId, chatChannelId) => {
 }
 
 export const updateQuiz = (gameState) => {
+    const topicTitle = document.getElementById('topic-title');
+    topicTitle.textContent = gameState.quiz.topic;
+
     const currentWord = gameState.quiz.items[gameState.round].word;
     const currentHints = gameState.quiz.items[gameState.round].hints;
 
     // UI 초기화
-    $roundInfo.textContent = `라운드 ${gameState.round + 1}`;
+    const chosungList = document.getElementById('chosung-list');
+    const $hintBox = document.getElementById('hint-list');
+
     $hintBox.innerHTML = '';
-    $chosungBox.innerHTML = '';
+    chosungList.innerHTML = '';
     $answerLabel.innerText = currentWord;
+    $roundInfo.textContent = `라운드 ${gameState.round + 1}`;
     toChosung(currentWord).forEach((cho, index) => {
         const li = document.createElement('li');
-        li.dataset.full = currentWord[index];
+        li.className = 'chosung-item'
+        li.dataset.char = currentWord[index];
         li.textContent = li.dataset.cho = cho;
 
         let isChosung = true;
         li.onclick = () => {
-            li.textContent = (isChosung = !isChosung) ? li.dataset.cho : li.dataset.full;
+            li.textContent = (isChosung = !isChosung) ? li.dataset.cho : li.dataset.char;
         };
-        $chosungBox.appendChild(li);
+        chosungList.appendChild(li);
     });
     currentHints.forEach(h => {
         const li = document.createElement('li');
@@ -159,7 +162,7 @@ window.addEventListener('load', async () => {
         const colorData = colorCodes[index];
         switch(colorData.availableScope){
             case 'CHEATKEY':
-                cheatKeyColorList[colorData.code] = colorData.darkRgbValue;
+                cheatKeyColorList[colorData.code] = colorData.lightRgbValue;
                 break;
             case 'SUBSCRIPTION_TIER2':
                 tier2ColorList[colorData.code] = colorData;

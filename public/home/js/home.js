@@ -1,0 +1,106 @@
+import {ChzzkClient} from "https://cdn.skypack.dev/chzzk"
+import {loadQuizzes, saveQuizzes, getChannelId, setChannelId, shuffle} from '../../util/util.js';
+import {setGameState, setScores} from "../../game/js/data.js";
+
+function render(){
+    const list = document.getElementById('topic-list');
+    list.innerHTML = '';
+    const quizzes = loadQuizzes();
+    if(!quizzes.length){
+        list.innerHTML = '<p>추가된 주제가 없습니다.</p>';
+        return;
+    }
+    quizzes.forEach((quiz, index) => {
+        const card = document.createElement('article');
+        card.className = 'card';
+        card.innerHTML = `
+            <button class="del-btn" title="삭제">✕</button>
+            <h2>${quiz.topic}</h2>
+            <p>${quiz.description}</p>`;
+        card.onclick = () => {
+            /**
+             * quiz: {topic: string, description: string, items: QuizItem[]}
+             * QuizItem: {word: string, hints: string[]}
+             * */
+            const copyQuiz = {...quiz}
+            shuffle(copyQuiz.items)
+            const gameState = {
+                round: 0,
+                solved: false,
+                quiz: copyQuiz,
+            };
+            setScores({})
+            setGameState(gameState);
+            location.href = '/game/';
+        };
+        list.appendChild(card);
+        card.querySelector('.del-btn').onclick = (e) => {
+            e.stopPropagation(); // 카드 클릭 이벤트 막기
+            if(confirm(`선택된 주제 '${quiz.topic}'을(를) 제거하시겠습니까?`)){
+                quizzes.splice(index, 1);
+                saveQuizzes(quizzes);
+                render();
+            }
+        };
+    });
+}
+
+window.addEventListener('load', async () => {
+    const client = new ChzzkClient({
+        baseUrls: {
+            chzzkBaseUrl: "/cors/chzzk",
+            gameBaseUrl: "/cors/game"
+        }
+    });
+
+    let channelId = getChannelId()
+    if(channelId.length !== 32){
+        channelId = prompt('치지직 채널 ID 혹은 닉네임을 입력해주세요');
+    }
+    let liveDetail;
+    try{
+        channelId.length === 32 && (liveDetail = await client.live.detail(channelId));
+    }catch(e){}
+    if(liveDetail == null || typeof liveDetail !== 'object'){
+        const channelList = await client.search.channels(channelId); // 닉네임으로 판단하여 채널 검색 수행
+        let channel = channelList.channels.find(channel => channel.channelName === channelId); // '정확히'일치하는 닉네임 탐색
+        if(!channel){
+            channel = channelList.channels[0]; // 없으면 최상단 채널 취득
+        }
+        if(!channel){
+            alert('존재하지 않는 채널 혹은 한번도 방송하지 않은 채널입니다.');
+            location.reload()
+            return
+        }
+        setChannelId(channel.channelId)
+    }
+    render();
+
+    const file = document.getElementById('file-input');
+    file.addEventListener('change', async (e) => {
+        const quizzes = loadQuizzes();
+        for(const file of e.target.files){
+            try{
+                const txt = await file.text()
+                const {topic, description, items} = JSON.parse(txt);
+                if(typeof topic !== 'string' || typeof description !== 'string' || !Array.isArray(items)){
+                    alert(`데이터 구조가 잘못되었습니다. '${file.name}'\n올바른 구조: {topic: str, description: str, items: QuizItem[]}`)
+                    continue;
+                }
+                let valid = true
+                for(const {word, hints} of items){
+                    if(typeof word !== 'string' || !Array.isArray(hints)){
+                        valid = false
+                        alert(`단어 정의가 잘못되었습니다. '${file.name}'\n올바른 구조: [{word: string, hints: string[]}, ...]`)
+                        break
+                    }
+                }
+                valid && quizzes.push({topic, description, items});
+            }catch(e){
+                alert(`잘못된 파일: '${file.name}'\n올바른 JSON 파일이 아닙니다.`);
+            }
+        }
+        saveQuizzes(quizzes);
+        render();
+    });
+})

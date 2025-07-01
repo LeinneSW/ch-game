@@ -17,7 +17,6 @@ app.use(express.json());
 app.use(express.text());
 app.use(express.static('public'));
 
-
 app.get('/cors/:base/*', async (req, res) => {
     const {base} = req.params;
     const baseURL = baseURLs[base];

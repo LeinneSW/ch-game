@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>초성게임</title>
+    <link rel="stylesheet" href="../assets/index.css">
+    <link rel="stylesheet" href="css/index.css">
+    <script type="module" src="js/logic.js"></script>
+</head>
+<body>
+<aside class="side">
+    <section id="rank-panel" class="panel">
+        <h3>순위</h3>
+        <div id="rank-graph" class="graph"></div>
+    </section>
+    <section id="message-panel" class="panel">
+        <h3>대화</h3>
+        <div id="message-list" class="message-list"></div>
+    </section>
+    <section id="answer-panel" class="panel">
+        <h3 id="answer-label">정답</h3>
+        <ul id="hint-list"></ul>
+    </section>
+</aside>
+
+<section class="board">
+    <!-- 상단: 주제 -->
+    <div class="board-header">
+        <h1 id="topic-title"></h1>
+    </div>
+    <!-- 중앙: 라운드, 초성 -->
+    <div class="board-center">
+        <h1 id="round-info"></h1>
+        <ul id="chosung-list" class="chosung-list"></ul>
+    </div>
+    <!-- 하단: 다음 문제 버튼 -->
+    <button id="next-btn" hidden>다음 문제 ➡</button>
+</section>
+
+<button id="home-btn" class="home-btn" onclick="location.href='/home/'">🏠 홈</button>
+</body>
+</html>
