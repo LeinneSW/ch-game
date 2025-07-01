@@ -1,10 +1,10 @@
 .board{
     flex: 1;
-    margin: 30px;
-    border-radius: 36px;
+    margin-left: var(--panel-spacing);
+    border-radius: 28px;
     position: relative;
     background: #f5f5f5;
-    box-shadow: 0 0 12px 1px #000;
+    box-shadow: 0 0 9px 1px #000;
 }
 
 .board-header{
@@ -46,8 +46,8 @@
 /* 홈 버튼 */
 .home-btn{
     position: absolute;
-    top: 16px;
-    left: 16px;
+    top: 25px;
+    right: 45px;
     z-index: 10;
     padding: 6px 14px;
     border: 0;
@@ -58,5 +58,5 @@
     font-size: .95rem;
 }
 .home-btn:hover{
-    opacity: .9;
+    background: #9abaff;
 }
