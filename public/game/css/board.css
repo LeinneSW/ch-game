@@ -46,10 +46,10 @@
 /* 홈 버튼 */
 .home-btn{
     position: absolute;
-    top: 25px;
-    right: 45px;
+    top: 70px;
+    right: 70px;
     z-index: 10;
-    padding: 6px 14px;
+    padding: 8px 16px;
     border: 0;
     border-radius: 8px;
     background: #5e8bff;
