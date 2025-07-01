@@ -106,8 +106,12 @@ window.addEventListener('load', async () => {
     }
 
     document.getElementById('next-btn').onclick = nextRound;
-    updateQuiz(gameState)
-    updateRankGraph(scores)
+    if(gameState.solved){
+        nextRound()
+    }else{
+        updateQuiz(gameState)
+        updateRankGraph(scores)
+    }
 
     const client = new ChzzkClient({
         baseUrls: {
