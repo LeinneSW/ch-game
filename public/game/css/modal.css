@@ -1,0 +1,78 @@
+/* ---------- 오버레이 ---------- */
+.modal-overlay {
+    position: fixed;
+    inset: 0;                                 /* top/right/bottom/left 0 */
+    display: grid;
+    place-items: center;
+    background: rgba(0, 0, 0, 0.6);
+
+    /* 초기 상태 – 화면에서 보이지 않음 */
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+
+    transition:
+        opacity   0.25s ease,
+        visibility 0s linear 0.25s;             /* 페이드아웃 끝난 뒤 hidden */
+}
+
+/* 활성 상태 */
+.modal-overlay.active {
+    opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
+    transition:
+        opacity   0.25s ease,
+        visibility 0s;                          /* 즉시 visible */
+}
+
+/* 사라지는 중 */
+.modal-overlay.leaving {
+    opacity: 0;
+    pointer-events: none;
+    visibility: visible;                      /* 트랜지션 동안엔 보이게 유지 */
+    transition:
+        opacity   0.25s ease,
+        visibility 0s linear 0.25s;             /* 0.25s 뒤 hidden */
+}
+
+/* ---------- 모달 박스 ---------- */
+.modal {
+    background: #fff;
+    padding: 1.5rem 2rem;
+    border-radius: 0.5rem;
+    max-width: 90vw;
+    max-height: 80vh;
+    overflow-y: auto;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.25);
+
+    transform: translateY(-20px);
+    transition: transform 0.25s ease;
+}
+
+/* 박스 애니메이션 – 올라오기 */
+.modal-overlay.active .modal {
+    transform: translateY(0);
+}
+
+/* 박스 애니메이션 – 내려가기 */
+.modal-overlay.leaving .modal {
+    transform: translateY(-20px);
+}
+
+/* ---------- 닫기 버튼 ---------- */
+.close-btn {
+    position: absolute;
+    top: 0.5rem;
+    right: 0.5rem;
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    line-height: 1;
+    cursor: pointer;
+}
+
+.close-btn:focus-visible {
+    outline: 2px solid #000;
+    outline-offset: 2px;
+}
