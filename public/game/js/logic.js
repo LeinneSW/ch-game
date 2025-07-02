@@ -3,44 +3,27 @@ import {addMessage, clearMessageList, convertColorCode, updateQuiz, updateRankGr
 import {getChannelId} from '../../util/util.js';
 import {getGameState, getScores, setGameState, setScores} from "./data.js";
 
-let chzzkChat;
-let liveStatus;
-
 const scores = getScores()
 const gameState = getGameState()
 
-const checkLiveState = async (client, channelId) => {
-    const beforeLiveStatus = liveStatus;
+const connectChannel = async (client, channelId) => {
+    let liveStatus;
     try{
         liveStatus = await client.live.status(channelId);
     }catch(e){}
-    if(liveStatus == null || typeof liveStatus !== 'object'){
+    if(typeof liveStatus !== 'object' || liveStatus?.chatChannelId == null){ // liveStatus nullable 방지
+        setTimeout(() => connectChannel(client, channelId), 1000); // 1초뒤 재시도
         return;
     }
 
-    if(!!liveStatus.chatChannelId && liveStatus.chatChannelId !== beforeLiveStatus?.chatChannelId){
-        if(!!beforeLiveStatus?.chatChannelId){
-            clearChatBox();
-        }
-        connectChannel(client);
-    }
-}
-
-const connectChannel = (client) => {
-    if(chzzkChat?.connected){
-        chzzkChat.disconnect();
-    }
-
     let startTime = Date.now();
-    chzzkChat = client.chat({
-        chatChannelId: liveStatus.chatChannelId,
-        pollInterval: 0,
-    });
+    const chzzkChat = client.chat(liveStatus.chatChannelId);
     chzzkChat.on('connect', () => {
         clearMessageList()
         startTime = Date.now();
         chzzkChat.requestRecentChat(50)
     })
+    chzzkChat.on('disconnect', () => setTimeout(() => connectChannel(client, channelId), 1000))
     chzzkChat.on('chat', chat => {
         const message = chat.message;
         const date = +chat.time || Date.now();
@@ -99,7 +82,7 @@ function nextRound(){
     updateRankGraph(scores);
 }
 
-window.addEventListener('load', async () => {
+window.addEventListener('load', () => {
     let channelId = getChannelId()
     if(!channelId || !gameState){
         location.href = '/home/';
@@ -120,6 +103,5 @@ window.addEventListener('load', async () => {
             gameBaseUrl: "/cors/game"
         }
     });
-    await checkLiveState(client, channelId);
-    setInterval(() => checkLiveState(client, channelId), 10 * 1000);
+    connectChannel(client, channelId).then(() => {});
 });
