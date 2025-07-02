@@ -70,6 +70,8 @@ window.addEventListener('load', async () => {
             return
         }
         setChannelId(channel.channelId)
+    }else if(liveDetail.chatChannelId == null){
+        alert('현재 방송이 19세로 설정되어있습니다.\n19세 해제 후 이용 부탁드립니다. (19세 설정시 채팅 조회 불가)')
     }
     render();
 
