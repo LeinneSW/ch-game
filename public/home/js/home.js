@@ -19,11 +19,12 @@ function render(){
             <p>${quiz.description}</p>`;
         card.onclick = () => {
             /**
-             * quiz: {topic: string, description: string, items: QuizItem[]}
-             * QuizItem: {word: string, hints: string[]}
-             * */
+             * Quiz: {topic: string, description: string, items: QuizItem[]}
+             * QuizItem: {word: string, aliases: string[], hints: string[]}
+             */
             const copyQuiz = {...quiz}
             shuffle(copyQuiz.items)
+            copyQuiz.items.forEach((item) => !Array.isArray(item.aliases) && (item.aliases = []))
             const gameState = {
                 round: 0,
                 solved: false,

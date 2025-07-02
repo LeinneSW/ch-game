@@ -46,14 +46,21 @@ const connectChannel = async (client, channelId) => {
         }
 
         addMessage(chat.profile, message, date, colorData, emojiList);
-        if(!gameState.solved && startTime <= date && message.trim() === gameState.quiz.items[gameState.round].word){
-            onQuizSolved(chat.profile);
-        }
+        startTime <= date && checkQuizAnswer(chat.profile, message.trim())
     });
     chzzkChat.connect().catch(() => {});
 }
 
-function onQuizSolved(profile){
+function checkQuizAnswer(profile, answer){
+    if(gameState.solved){ // 이미 정답을 맞춘 경우
+        return
+    }
+
+    const currentItem = gameState.quiz.items[gameState.round];
+    if(currentItem.word !== answer && !currentItem.aliases.includes(answer)){ // 정답이 아닌 경우
+        return
+    }
+
     gameState.solved = true;
     setGameState(gameState)
 
@@ -64,9 +71,10 @@ function onQuizSolved(profile){
     }
     scores[profile.userIdHash].score += 100;
     setScores(scores)
+    updateRankGraph(scores);
+
     // TODO: 정답자 및 정답 modal
     // TODO: fanfare effect
-    updateRankGraph(scores);
 }
 
 function nextRound(){
