@@ -33,7 +33,7 @@ export const escapeHTML = (s) => {
     return s.replace(/[&<>"']/g, m => htmlEntity[m]);
 }
 
-export const addMessageBox = (profile, message, msecs = Date.now(), colorData = 'white', emojiList = {}) => {
+export const addMessage = (profile, message, msecs = Date.now(), colorData = 'white', emojiList = {}) => {
     const messageList = document.getElementById('message-list');
     const messageDiv = document.createElement('div')
     messageDiv.id = msecs + ''
@@ -84,7 +84,7 @@ export const addMessageBox = (profile, message, msecs = Date.now(), colorData = 
     }
 }
 
-export const clearChatBox = () => {
+export const clearMessageList = () => {
     const messageList = document.getElementById('message-list');
     messageList.innerHTML = '';
 }

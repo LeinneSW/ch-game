@@ -1,5 +1,5 @@
 import {ChzzkClient} from "https://cdn.skypack.dev/chzzk"
-import {addMessageBox, clearChatBox, convertColorCode, updateQuiz, updateRankGraph} from "./ui.js";
+import {addMessage, clearMessageList, convertColorCode, updateQuiz, updateRankGraph} from "./ui.js";
 import {getChannelId} from '../../util/util.js';
 import {getGameState, getScores, setGameState, setScores} from "./data.js";
 
@@ -37,6 +37,7 @@ const connectChannel = (client) => {
         pollInterval: 0,
     });
     chzzkChat.on('connect', () => {
+        clearMessageList()
         startTime = Date.now();
         chzzkChat.requestRecentChat(50)
     })
@@ -61,7 +62,7 @@ const connectChannel = (client) => {
             emojiList = {};
         }
 
-        addMessageBox(chat.profile, message, date, colorData, emojiList);
+        addMessage(chat.profile, message, date, colorData, emojiList);
         if(!gameState.solved && startTime <= date && message.trim() === gameState.quiz.items[gameState.round].word){
             onQuizSolved(chat.profile);
         }
