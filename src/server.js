@@ -55,6 +55,7 @@ app.get('/colorCodes', async (req, res) => {
         res.sendStatus(404);
     }
 });
+app.get('*', (req, res) => res.redirect('/home/'))
 
 const PORT = process.env.HTTP_PORT || 6633;
 app.listen(PORT, () => {
