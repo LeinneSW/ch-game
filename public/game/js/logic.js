@@ -1,7 +1,7 @@
 import {ChzzkClient} from "https://cdn.skypack.dev/chzzk"
 import {addMessage, clearMessageList, convertColorCode, updateQuiz, updateRankGraph} from "./ui.js";
 import {getChannelId} from '../../util/util.js';
-import {getGameState, getScores, setGameState, setScores} from "./data.js";
+import {getGameState, getScores, resetGameState, resetScores, setGameState, setScores} from "./data.js";
 
 const scores = getScores()
 const gameState = getGameState()
@@ -96,7 +96,13 @@ window.addEventListener('load', () => {
         location.href = '/home/';
         return;
     }
-
+    document.getElementById('home-btn').onclick = () => {
+        if(confirm('정말 진행중이던 게임을 종료하고 홈 화면으로 돌아가시겠습니까?')){
+            resetScores()
+            resetGameState()
+            location.href = '/home/'
+        }
+    };
     document.getElementById('next-btn').onclick = nextRound;
     if(gameState.solved){
         nextRound()
