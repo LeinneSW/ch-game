@@ -3,7 +3,7 @@ import {getScores} from "../../game/js/data.js";
 window.addEventListener("load", () => {
     const scores = getScores();
     if(Object.keys(scores).length === 0){
-        location.href = 'index.html';
+        location.href = '/home/';
         return;
     }
 
