@@ -5,7 +5,6 @@
     flex-direction: column;
 }
 
-/* 왼쪽 패널 공통 테두리‧둥근 모서리 */
 .panel{
     flex: 1;
     height: 0;
@@ -23,12 +22,18 @@
 }
 
 .panel-title{
+    font-size: 28px;
     font-weight: bold;
-    font-size: 26px;
-    margin-bottom: 16px;
+    margin-bottom: 6px;
 }
 
 .hint-list{
     margin: 0;
-    padding-left: 30px;
+    padding-top: 12px;
+    padding-left: 32px;
+}
+
+.hint-list li{
+    font-size: 18px;
+    word-break: keep-all;
 }
