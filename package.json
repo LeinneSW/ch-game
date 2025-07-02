@@ -1,18 +1,14 @@
 {
-  "name": "ch-game",
-  "version": "1.0.0",
-  "description": "",
-  "main": "src/server.js",
-  "scripts": {
-    "start": "node src/server.js"
-  },
-  "type": "module",
-  "keywords": [],
-  "author": "LeinneSW",
-  "license": "ISC",
-  "dependencies": {
-    "chzzk": "^1.10.4",
-    "express": "^4.21.1",
-    "path": "^0.12.7"
-  }
+    "name": "cs-game",
+    "author": "LeinneSW",
+    "type": "module",
+    "main": "src/server.js",
+    "scripts": {
+        "start": "node src/server.js"
+    },
+    "dependencies": {
+        "chzzk": "^1.10.4",
+        "express": "^4.21.1",
+        "path": "^0.12.7"
+    }
 }
