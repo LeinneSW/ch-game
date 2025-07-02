@@ -30,6 +30,10 @@ export const setChannelId = (channelId) => {
     return false
 }
 
+export const resetChannelId = () => {
+    localStorage.removeItem(CHANNEL_ID_KEY);
+}
+
 export const shuffle = (result) => { // 피셔–예이츠
     for(let i = result.length - 1; i > 0; i--){
         const j = Math.floor(Math.random() * (i + 1));
