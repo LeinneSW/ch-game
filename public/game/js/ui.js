@@ -158,13 +158,11 @@ export function updateRankGraph(scores){
     }
 }
 
-export const openModal = (title = '', message = '') => {
+export const openModal = (title, message) => {
     const overlay = document.getElementById('overlay');
-    if (!overlay) return;
-
     // 제목·본문 주입
-    title && (overlay.querySelector('.modal-title').textContent = title);
-    message && (overlay.querySelector('.modal-body').innerHTML   = message.replace(/\n/g, '<br>'));
+    overlay.querySelector('.modal-title').textContent = title || '';
+    overlay.querySelector('.modal-body').innerHTML = (message || '').replace(/\n/g, '<br>');
 
     // 애니메이션 클래스 토글
     overlay.classList.remove('leaving');
@@ -173,14 +171,8 @@ export const openModal = (title = '', message = '') => {
 
 export const closeModal = () => {
     const overlay = document.getElementById('overlay');
-    if (!overlay) return;
-
-    // 페이드아웃 시작
     overlay.classList.remove('active');
     overlay.classList.add('leaving');
-
-    /* 필요하면 포커스 되돌리기 등 추가 가능
-       overlay.addEventListener('transitionend', () => { … }, { once: true }); */
 };
 
 window.addEventListener('load', async () => {
@@ -201,5 +193,5 @@ window.addEventListener('load', async () => {
     const closeBtn = overlay.querySelector('.close-btn');
     closeBtn.addEventListener('click', closeModal);
     overlay.addEventListener('click', e => e.target === overlay && closeModal()); // 외부 클릭시 닫기
-    document.addEventListener('keydown', (e) => (e.key === 'Escape' && closeModal(), e.key === ' ' && openModal())); // esc 입력시 닫기
+    document.addEventListener('keydown', (e) => e.key === 'Escape' && closeModal()); // esc 입력시 닫기
 })
