@@ -90,6 +90,11 @@ function nextRound(){
     updateRankGraph(scores);
 }
 
+// 실수로 인한 페이지 이동 방지
+function lockHistory() {
+    history.pushState(null, '', location.href);     // 더미 스택 추가
+}
+
 window.addEventListener('load', () => {
     let channelId = getChannelId()
     if(!channelId || !gameState){
@@ -111,6 +116,9 @@ window.addEventListener('load', () => {
         updateRankGraph(scores)
     }
 
+    lockHistory();
+    window.addEventListener('popstate', lockHistory);
+
     const client = new ChzzkClient({
         baseUrls: {
             chzzkBaseUrl: "/cors/chzzk",
@@ -120,9 +128,3 @@ window.addEventListener('load', () => {
     connectChannel(client, channelId).then(() => {});
 });
 
-// 실수로 인한 페이지 이동 방지
-function lockHistory() {
-    history.pushState(null, '', location.href);     // 더미 스택 추가
-}
-lockHistory();
-window.addEventListener('popstate', lockHistory);
