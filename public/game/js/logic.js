@@ -119,3 +119,10 @@ window.addEventListener('load', () => {
     });
     connectChannel(client, channelId).then(() => {});
 });
+
+// 실수로 인한 페이지 이동 방지
+function lockHistory() {
+    history.pushState(null, '', location.href);     // 더미 스택 추가
+}
+lockHistory();
+window.addEventListener('popstate', lockHistory);
