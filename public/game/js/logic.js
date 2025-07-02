@@ -82,7 +82,7 @@ function nextRound(){
     gameState.solved = false;
     setGameState(gameState);
 
-    if(gameState.round >= gameState.quiz.items.length){
+    if(gameState.round >= gameState.roundLength){
         location.href = '/result/';
         return;
     }

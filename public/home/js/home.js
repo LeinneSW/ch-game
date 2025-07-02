@@ -27,6 +27,7 @@ function render(){
             copyQuiz.items.forEach((item) => !Array.isArray(item.aliases) && (item.aliases = []))
             const gameState = {
                 round: 0,
+                roundLength: copyQuiz.items.length - 1, // TODO: 라운드 개수 조절 기능
                 solved: false,
                 quiz: copyQuiz,
             };
