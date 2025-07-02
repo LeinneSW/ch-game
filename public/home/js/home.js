@@ -1,6 +1,6 @@
 import {ChzzkClient} from "https://cdn.skypack.dev/chzzk"
-import {loadQuizzes, saveQuizzes, getChannelId, setChannelId, shuffle} from '../../util/util.js';
-import {setGameState, setScores} from "../../game/js/data.js";
+import {loadQuizzes, saveQuizzes, getChannelId, setChannelId, shuffle, resetChannelId} from '../../util/util.js';
+import {resetScores, setGameState} from "../../game/js/data.js";
 
 function render(){
     const list = document.getElementById('topic-list');
@@ -30,7 +30,6 @@ function render(){
                 solved: false,
                 quiz: copyQuiz,
             };
-            setScores({})
             setGameState(gameState);
             resetScores()
             location.href = '/game/';
