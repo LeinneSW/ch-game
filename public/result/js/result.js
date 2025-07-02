@@ -1,4 +1,4 @@
-import {getScores} from "../../game/js/data.js";
+import {getScores, resetGameState, resetScores, restartGame} from "../../game/js/data.js";
 
 window.addEventListener("load", () => {
     const scores = getScores();
@@ -13,4 +13,16 @@ window.addEventListener("load", () => {
         li.textContent = `${idx + 1}. ${profile.nickname} — ${score} 점`;
         list.appendChild(li);
     });
+
+    const restartButton = document.getElementById('restart-button');
+    restartButton.onclick = () => {
+        restartGame();
+        location.href = '/game/'
+    }
+    const homeButton = document.getElementById('home-button');
+    homeButton.onclick = () => {
+        resetScores()
+        resetGameState()
+        location.href = '/home/'
+    }
 })
