@@ -32,6 +32,7 @@ function render(){
             };
             setScores({})
             setGameState(gameState);
+            resetScores()
             location.href = '/game/';
         };
         list.appendChild(card);
@@ -66,6 +67,7 @@ window.addEventListener('load', async () => {
         const channelList = await client.search.channels(channelId); // 닉네임으로 판단하여 채널 검색 수행
         const channel = channelList.channels.find(channel => channel.channelName === channelId); // '정확히'일치하는 닉네임 탐색
         if(!channel){
+            resetChannelId()
             alert('잘못된 닉네임 혹은 방송한 이력이 없어 접속에 실패했습니다.');
             setTimeout(() => location.reload(), 500);
             return
