@@ -55,7 +55,7 @@ window.addEventListener('load', async () => {
 
     let channelId = getChannelId()
     if(channelId.length !== 32){
-        channelId = prompt('치지직 채널 ID 혹은 닉네임을 입력해주세요');
+        channelId = prompt('본인의 치지직 닉네임 혹은 채널 ID를 입력해주세요.');
     }
     let liveDetail;
     try{
@@ -63,13 +63,10 @@ window.addEventListener('load', async () => {
     }catch(e){}
     if(liveDetail == null || typeof liveDetail !== 'object'){
         const channelList = await client.search.channels(channelId); // 닉네임으로 판단하여 채널 검색 수행
-        let channel = channelList.channels.find(channel => channel.channelName === channelId); // '정확히'일치하는 닉네임 탐색
+        const channel = channelList.channels.find(channel => channel.channelName === channelId); // '정확히'일치하는 닉네임 탐색
         if(!channel){
-            channel = channelList.channels[0]; // 없으면 최상단 채널 취득
-        }
-        if(!channel){
-            alert('존재하지 않는 채널 혹은 한번도 방송하지 않은 채널입니다.');
-            location.reload()
+            alert('잘못된 닉네임 혹은 방송한 이력이 없어 접속에 실패했습니다.');
+            setTimeout(() => location.reload(), 500);
             return
         }
         setChannelId(channel.channelId)
