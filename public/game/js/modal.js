@@ -22,10 +22,13 @@ export const showConfirmModal = (title, message, confirmFn, cancelFn) => {
     footer.innerHTML = `<button id="confirmBtn" class="modal-button primary">확인</button>
         <button id="cancelBtn" class="modal-button ghost">취소</button>`
 
+    const confirmBtn = document.getElementById('confirmBtn')
+    confirmBtn.onclick = confirmFn;
+    confirmBtn.addEventListener('click', closeModal);
+
     const cancelBtn = document.getElementById('cancelBtn')
     cancelBtn.onclick = cancelFn
     cancelBtn.addEventListener('click', closeModal);
-    document.getElementById('confirmBtn').onclick = confirmFn
 
     // 애니메이션 클래스 토글
     overlay.classList.remove('leaving');
