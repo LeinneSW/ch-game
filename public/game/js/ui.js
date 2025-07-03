@@ -158,23 +158,6 @@ export function updateRankGraph(scores){
     }
 }
 
-export const openModal = (title, message) => {
-    const overlay = document.getElementById('overlay');
-    // 제목·본문 주입
-    overlay.querySelector('.modal-title').textContent = title || '';
-    overlay.querySelector('.modal-body').innerHTML = (message || '').replace(/\n/g, '<br>');
-
-    // 애니메이션 클래스 토글
-    overlay.classList.remove('leaving');
-    requestAnimationFrame(() => overlay.classList.add('active'));
-};
-
-export const closeModal = () => {
-    const overlay = document.getElementById('overlay');
-    overlay.classList.remove('active');
-    overlay.classList.add('leaving');
-};
-
 window.addEventListener('load', async () => {
     const colorCodes = await (await fetch('/colorCodes')).json();
     for(const index in colorCodes){
@@ -188,10 +171,4 @@ window.addEventListener('load', async () => {
                 break;
         }
     }
-
-    const overlay = document.getElementById('overlay');
-    const closeBtn = overlay.querySelector('.close-btn');
-    closeBtn.addEventListener('click', closeModal);
-    overlay.addEventListener('click', e => e.target === overlay && closeModal()); // 외부 클릭시 닫기
-    document.addEventListener('keydown', (e) => e.key === 'Escape' && closeModal()); // esc 입력시 닫기
 })
