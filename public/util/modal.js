@@ -1,3 +1,12 @@
+const modalInnerHTML = `
+<div class="modal" role="dialog" aria-modal="true">
+    <button class="close-btn" aria-label="닫기">&times;</button>
+    <h2 class="modal-title"></h2>
+    <p class="modal-body"></p>
+    <footer class="modal-footer"></footer>
+</div>
+`;
+
 /**
  * @param {'alert' | 'confirm' | 'prompt'} type
  * @param {string} title
@@ -5,9 +14,10 @@
  */
 export const createModal = (type, title, message) => {
     return new Promise((resolve) => {
-        // 1) 템플릿 복제
-        const tpl = document.getElementById('modal-template');
-        const overlay = tpl.content.firstElementChild.cloneNode(true);
+        const overlay = document.createElement('div');
+        overlay.id = 'overlay';
+        overlay.className = 'modal-overlay';
+        overlay.innerHTML = modalInnerHTML;
 
         const modalTitle = overlay.querySelector('.modal-title');
         modalTitle.textContent = title;

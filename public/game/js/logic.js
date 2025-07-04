@@ -2,7 +2,7 @@ import {ChzzkClient} from "https://cdn.skypack.dev/chzzk"
 import {addMessage, clearMessageList, convertColorCode, updateQuiz, updateRankGraph} from "./ui.js";
 import {getChannelId} from '../../util/util.js';
 import {getGameState, getScores, resetGameState, resetScores, setGameState, setScores} from "./data.js";
-import {createModal} from "./modal.js";
+import {createModal} from "../../util/modal.js";
 
 const scores = getScores()
 const gameState = getGameState()
