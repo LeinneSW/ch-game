@@ -103,7 +103,7 @@ window.addEventListener('load', () => {
         return;
     }
     document.getElementById('home-btn').onclick = async () => {
-        if(await createModal('confirm', '게임 종료', '정말 진행중이던 게임을 종료하고 홈 화면으로 돌아가시겠습니까?')){
+        if(await createModal('confirm', '정말 진행중이던 게임을 종료하고 홈 화면으로 돌아가시겠습니까?', '게임 종료')){
             resetScores()
             resetGameState()
             location.href = '/home/'

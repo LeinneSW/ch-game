@@ -9,10 +9,10 @@ const modalInnerHTML = `
 
 /**
  * @param {'alert' | 'confirm' | 'prompt'} type
- * @param {string} title
  * @param {string} message
+ * @param {string} title
  */
-export const createModal = (type, title, message) => {
+export const createModal = (type, message, title = '') => {
     return new Promise((resolve) => {
         const overlay = document.createElement('div');
         overlay.id = 'overlay';
@@ -20,7 +20,7 @@ export const createModal = (type, title, message) => {
         overlay.innerHTML = modalInnerHTML;
 
         const modalTitle = overlay.querySelector('.modal-title');
-        modalTitle.textContent = title;
+        title && (modalTitle.textContent = title);
 
         const modalBody = overlay.querySelector('.modal-body');
         modalBody.innerHTML = message.trim().replace(/\n/g, '<br>');
