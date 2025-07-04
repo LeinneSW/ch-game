@@ -1,6 +1,7 @@
 import {ChzzkClient} from "https://cdn.skypack.dev/chzzk"
 import {loadQuizzes, saveQuizzes, getChannelId, setChannelId, shuffle, resetChannelId} from '../../util/util.js';
 import {resetScores, setGameState} from "../../game/js/data.js";
+import {createModal} from "../../util/modal.js";
 
 function render(){
     const list = document.getElementById('topic-list');
@@ -57,7 +58,7 @@ window.addEventListener('load', async () => {
 
     let channelId = getChannelId()
     if(channelId.length !== 32){
-        channelId = prompt('본인의 치지직 닉네임 혹은 채널 ID를 입력해주세요.');
+        channelId = await createModal('prompt', '본인의 치지직 닉네임 혹은 채널 ID를 입력해주세요')
     }
     let liveDetail;
     try{
