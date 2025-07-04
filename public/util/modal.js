@@ -60,7 +60,7 @@ export const createModal = (type, title, message) => {
 
         // 5) 이벤트 바인딩
         let confirmValue = true, cancelValue = false;
-        const modalInput = footer.querySelector('.modal-input');
+        const modalInput = modalBody.querySelector('.modal-input');
         const [confirmBtn, cancelBtn] = footer.querySelectorAll('button');
         if(modalInput != null){
             confirmValue = modalInput.value
