@@ -1,50 +1,70 @@
-export const showAlertModal = (title, message) => {
-    const overlay = document.getElementById('overlay');
-    overlay.querySelector('.modal-title').textContent = title || '';
-    overlay.querySelector('.modal-body').innerHTML = (message || '').replace(/\n/g, '<br>');
+/**
+ * @param {'alert' | 'confirm' | 'prompt'} type
+ * @param {string} title
+ * @param {string} message
+ */
+export const createModal = (type, title, message) => {
+    return new Promise((resolve) => {
+        // 1) 템플릿 복제
+        const tpl = document.getElementById('modal-template');
+        const overlay = tpl.content.firstElementChild.cloneNode(true);
 
-    const footer = document.querySelector('.modal-footer')
-    footer.innerHTML = `<button id="confirmBtn" class="modal-button primary">확인</button>`
+        const modalTitle = overlay.querySelector('.modal-title');
+        modalTitle.textContent = title;
 
-    document.getElementById('cancelBtn').onclick = closeModal;
+        const modalBody = overlay.querySelector('.modal-body');
+        modalBody.innerHTML = message.trim().replace(/\n/g, '<br>');
 
-    // 애니메이션 클래스 토글
-    overlay.classList.remove('leaving');
-    requestAnimationFrame(() => overlay.classList.add('active'));
-};
+        const footer = overlay.querySelector('.modal-footer');
+        const btn = (text, className) => {
+            const b = document.createElement('button');
+            b.textContent = text;
+            b.className = `modal-button ${className}`;
+            return b;
+        };
 
-export const showConfirmModal = (title, message, confirmFn, cancelFn) => {
-    const overlay = document.getElementById('overlay');
-    overlay.querySelector('.modal-title').textContent = title || '';
-    overlay.querySelector('.modal-body').innerHTML = (message || '').replace(/\n/g, '<br>');
+        switch(type){
+            case 'alert':
+                footer.append(btn('확인', 'primary'));
+                break;
+            case 'confirm':
+                footer.append(btn('확인', 'primary'), btn('취소', 'ghost'));
+                break;
+            case 'prompt':
+                modalBody.innerHTML += '<br><input type="text" class="modal-input">';
+                footer.append(btn('확인', 'primary'), btn('취소', 'ghost'));
+                break;
+            default:
+                throw new Error(`Unknown modal type: ${type}`);
+        }
 
-    const footer = document.querySelector('.modal-footer')
-    footer.innerHTML = `<button id="confirmBtn" class="modal-button primary">확인</button>
-        <button id="cancelBtn" class="modal-button ghost">취소</button>`
+        // 4) 공통 닫기 로직
+        const close = (result) => {
+            overlay.classList.remove('active');
+            overlay.classList.add('leaving');
+            overlay.addEventListener('transitionend', () => {
+                overlay.remove();
+                resolve(result);           // Promise 반환
+            }, {once: true});
+        };
 
-    const confirmBtn = document.getElementById('confirmBtn')
-    confirmBtn.onclick = confirmFn;
-    confirmBtn.addEventListener('click', closeModal);
+        // 5) 이벤트 바인딩
+        let confirmValue = true, cancelValue = false;
+        const modalInput = footer.querySelector('.modal-input');
+        const [confirmBtn, cancelBtn] = footer.querySelectorAll('button');
+        if(modalInput != null){
+            confirmValue = modalInput.value
+            cancelValue = null;
+            modalInput.addEventListener('keydown', (e) => e.key === 'Enter' && confirmBtn.click());
+        }
 
-    const cancelBtn = document.getElementById('cancelBtn')
-    cancelBtn.onclick = cancelFn
-    cancelBtn.addEventListener('click', closeModal);
+        confirmBtn.onclick = () => close(confirmValue);
+        cancelBtn.onclick = overlay.querySelector('.close-btn').onclick = () => close(cancelValue);
+        overlay.onclick = (e) => e.target === overlay && close(cancelValue); // 외부 클릭시 닫히게
+        document.addEventListener('keydown', (e) => e.key === 'Escape' && close(cancelValue), {once: true});
 
-    // 애니메이션 클래스 토글
-    overlay.classList.remove('leaving');
-    requestAnimationFrame(() => overlay.classList.add('active'));
-};
-
-export const closeModal = () => {
-    const overlay = document.getElementById('overlay');
-    overlay.classList.remove('active');
-    overlay.classList.add('leaving');
-};
-
-window.addEventListener('load', async () => {
-    const overlay = document.getElementById('overlay');
-    const closeBtn = overlay.querySelector('.close-btn');
-    closeBtn.addEventListener('click', closeModal);
-    overlay.addEventListener('click', e => e.target === overlay && closeModal()); // 외부 클릭시 닫기
-    document.addEventListener('keydown', (e) => e.key === 'Escape' && closeModal()); // esc 입력시 닫기
-})
+        // 6) DOM 삽입 + 애니메이션
+        document.body.append(overlay);
+        requestAnimationFrame(() => overlay.classList.add('active'));
+    });
+}

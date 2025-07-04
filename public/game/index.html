@@ -8,14 +8,16 @@
     <script type="module" src="js/logic.js"></script>
 </head>
 <body>
-<div id="overlay" class="modal-overlay">
-    <div class="modal" role="dialog" aria-modal="true">
-        <button class="close-btn" aria-label="닫기">&times;</button>
-        <h2 class="modal-title"></h2>
-        <p class="modal-body"></p>
-        <footer class="modal-footer"></footer>
+<template id="modal-template">
+    <div id="overlay" class="modal-overlay">
+        <div class="modal" role="dialog" aria-modal="true">
+            <button class="close-btn" aria-label="닫기">&times;</button>
+            <h2 class="modal-title"></h2>
+            <p class="modal-body"></p>
+            <footer class="modal-footer"></footer>
+        </div>
     </div>
-</div>
+</template>
 
 <aside class="side">
     <section id="rank-panel" class="panel">
