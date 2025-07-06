@@ -65,8 +65,11 @@ window.addEventListener('load', async () => {
         channelId.length === 32 && (liveDetail = await client.live.detail(channelId));
     }catch(e){}
     if(liveDetail == null || typeof liveDetail !== 'object'){
-        const channelList = await client.search.channels(channelId); // 닉네임으로 판단하여 채널 검색 수행
-        const channel = channelList.channels.find(channel => channel.channelName === channelId); // '정확히'일치하는 닉네임 탐색
+        let channel = null
+        try{
+            const channelList = await client.search.channels(channelId); // 닉네임으로 판단하여 채널 검색 수행
+            channel = channelList.channels.find(channel => channel.channelName === channelId); // '정확히'일치하는 닉네임 탐색
+        }catch{}
         if(!channel){
             resetChannelId()
             await createModal('alert', '잘못된 닉네임 혹은 방송한 이력이 없어 접속에 실패했습니다.')
