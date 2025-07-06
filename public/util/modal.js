@@ -59,16 +59,16 @@ export const createModal = (type, message, title = '') => {
         };
 
         // 5) 이벤트 바인딩
-        let confirmValue = true, cancelValue = false;
+        let confirmFn = () => true, cancelValue = false;
         const modalInput = modalBody.querySelector('.modal-input');
         const [confirmBtn, cancelBtn] = footer.querySelectorAll('button');
         if(modalInput != null){
-            confirmValue = modalInput.value
             cancelValue = null;
+            confirmFn = () => modalInput.value
             modalInput.addEventListener('keydown', (e) => e.key === 'Enter' && confirmBtn.click());
         }
 
-        confirmBtn.onclick = () => close(confirmValue);
+        confirmBtn.onclick = () => close(confirmFn());
         cancelBtn.onclick = overlay.querySelector('.close-btn').onclick = () => close(cancelValue);
         overlay.onclick = (e) => e.target === overlay && close(cancelValue); // 외부 클릭시 닫히게
         document.addEventListener('keydown', (e) => e.key === 'Escape' && close(cancelValue), {once: true});
