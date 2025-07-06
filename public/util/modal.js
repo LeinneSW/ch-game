@@ -75,6 +75,9 @@ export const createModal = (type, message, title = '') => {
 
         // 6) DOM 삽입 + 애니메이션
         document.body.append(overlay);
-        requestAnimationFrame(() => overlay.classList.add('active'));
+        requestAnimationFrame(() => {
+            overlay.classList.add('active')
+            modalInput && modalInput.focus();
+        });
     });
 }
