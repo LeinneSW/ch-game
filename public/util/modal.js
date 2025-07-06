@@ -68,8 +68,9 @@ export const createModal = (type, message, title = '') => {
             modalInput.addEventListener('keydown', (e) => e.key === 'Enter' && confirmBtn.click());
         }
 
-        confirmBtn.onclick = () => close(confirmFn());
-        cancelBtn.onclick = overlay.querySelector('.close-btn').onclick = () => close(cancelValue);
+        confirmBtn.onclick = () => close(confirmFn())
+        overlay.querySelector('.close-btn').onclick = () => close(cancelValue)
+        cancelBtn && (cancelBtn.onclick = () => close(cancelValue));
         overlay.onclick = (e) => e.target === overlay && close(cancelValue); // 외부 클릭시 닫히게
         document.addEventListener('keydown', (e) => e.key === 'Escape' && close(cancelValue), {once: true});
 
