@@ -4,7 +4,7 @@
 @import url("sidebar.css");
 
 :root{
-    --panel-spacing: 26px;
+    --panel-spacing: 22px;
 }
 
 html, body{
@@ -14,6 +14,6 @@ html, body{
 
 body{
     display: flex;
-    padding: 70px;
+    padding: 40px;
     gap: var(--panel-spacing);
 }
