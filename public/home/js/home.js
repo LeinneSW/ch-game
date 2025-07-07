@@ -58,7 +58,12 @@ window.addEventListener('load', async () => {
 
     let channelId = getChannelId()
     if(channelId.length !== 32){
-        channelId = await createModal('prompt', '본인의 치지직 닉네임 혹은 채널 ID를 입력해주세요')
+        const modalOptions = {
+            type: 'prompt',
+            message: '본인의 치지직 닉네임 혹은 채널 ID를 입력해주세요',
+            backdrop: 'static',
+        }
+        channelId = await createModal(modalOptions)
     }
     let liveDetail;
     try{
@@ -72,13 +77,21 @@ window.addEventListener('load', async () => {
         }catch{}
         if(!channel){
             resetChannelId()
-            await createModal('alert', '잘못된 닉네임 혹은 방송한 이력이 없어 접속에 실패했습니다.')
+            const modalOptions = {
+                type: 'alert',
+                message: '잘못된 닉네임 혹은 방송한 이력이 없어 접속에 실패했습니다'
+            }
+            await createModal(modalOptions)
             setTimeout(() => location.reload(), 500);
             return
         }
         setChannelId(channel.channelId)
     }else if(liveDetail.chatChannelId == null){
-        await createModal('alert', '현재 방송이 19세로 설정되어있습니다.\n19세 해제 후 이용 부탁드립니다. (19세 설정시 채팅 조회 불가)')
+        const modalOptions = {
+            type: 'alert',
+            message: '현재 방송이 19세로 설정되어있습니다.\n19세 해제 후 이용 부탁드립니다. (19세 설정시 채팅 조회 불가)'
+        }
+        await createModal(modalOptions)
     }
     render();
 
@@ -90,20 +103,32 @@ window.addEventListener('load', async () => {
                 const txt = await file.text()
                 const {topic, description, items} = JSON.parse(txt);
                 if(typeof topic !== 'string' || typeof description !== 'string' || !Array.isArray(items)){
-                    await createModal('alert', `데이터 구조가 잘못되었습니다. '${file.name}'\n올바른 구조: {topic: str, description: str, items: QuizItem[]}`)
+                    const modalOptions = {
+                        type: 'alert',
+                        message: `데이터 구조가 잘못되었습니다. '${file.name}'\n올바른 구조: {topic: str, description: str, items: QuizItem[]}`
+                    }
+                    await createModal(modalOptions)
                     continue;
                 }
                 let valid = true
                 for(const {word, hints} of items){
                     if(typeof word !== 'string' || !Array.isArray(hints)){
                         valid = false
-                        await createModal('alert', `단어 정의가 잘못되었습니다. '${file.name}'\n올바른 구조: [{word: string, hints: string[]}, ...]`)
+                        const modalOptions = {
+                            type: 'alert',
+                            message: `단어 정의가 잘못되었습니다. '${file.name}'\n올바른 구조: [{word: string, hints: string[]}, ...]`
+                        }
+                        await createModal(modalOptions)
                         break
                     }
                 }
                 valid && quizzes.push({topic, description, items});
             }catch(e){
-                await createModal('alert', `잘못된 파일: '${file.name}'\n올바른 JSON 파일이 아닙니다.`);
+                const modalOptions = {
+                    type: 'alert',
+                    message: `잘못된 파일: '${file.name}'\n올바른 JSON 파일이 아닙니다.`
+                }
+                await createModal(modalOptions);
             }
         }
         saveQuizzes(quizzes);

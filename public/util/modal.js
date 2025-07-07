@@ -7,11 +7,14 @@ const modalInnerHTML = `
 `;
 
 /**
- * @param {'alert' | 'confirm' | 'prompt'} type
- * @param {string} message
- * @param {string} title
+ * @param {{
+ *   type: 'alert' | 'confirm' | 'prompt',
+ *   message: string,
+ *   title?: string,
+ *   backdrop?: 'static' | 'none' | 'dismiss'
+ * }} modalOptions
  */
-export const createModal = (type, message, title = '') => {
+export const createModal = ({type, message, title, backdrop}) => {
     return new Promise((resolve) => {
         const overlay = document.createElement('div');
         overlay.id = 'overlay';
@@ -68,8 +71,17 @@ export const createModal = (type, message, title = '') => {
 
         confirmBtn.onclick = () => close(modalInput?.value || true)
         cancelBtn && (cancelBtn.onclick = () => close(cancelValue));
-        overlay.onclick = (e) => e.target === overlay && close(cancelValue); // 외부 클릭시 닫히게
-        document.addEventListener('keydown', (e) => e.key === 'Escape' && close(cancelValue), {once: true});
+        switch(backdrop){
+            case 'static':
+                break;
+            case 'none':
+                overlay.style.background = 'transparent';
+                break;
+            default: // dismiss
+                overlay.onclick = (e) => e.target === overlay && close(cancelValue); // 외부 클릭시 닫히게
+                document.addEventListener('keydown', (e) => e.key === 'Escape' && close(cancelValue), {once: true});
+                break;
+        }
 
         // 6) DOM 삽입 + 애니메이션
         document.body.append(overlay);
