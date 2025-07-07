@@ -142,11 +142,11 @@ export function updateRankGraph(scores){
         })
         top.length === 1 && top.push({
             profile: {nickname: '유저2'},
-            score: Math.floor(Math.random() * 400 + 401)
+            score: Math.floor(Math.random() * top[0].score * 0.25 + top[0].score * 0.6)
         })
         top.length === 2 && top.push({
             profile: {nickname: '유저3'},
-            score: Math.floor(Math.random() * 100 + 101)
+            score: Math.floor(Math.random() * top[1].score * 0.3 + top[1].score * 0.4)
         })
     }
     if(top.length < 1){
