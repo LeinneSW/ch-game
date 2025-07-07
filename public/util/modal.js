@@ -1,6 +1,5 @@
 const modalInnerHTML = `
 <div class="modal" role="dialog" aria-modal="true">
-    <button class="close-btn" aria-label="닫기">&times;</button>
     <h2 class="modal-title"></h2>
     <p class="modal-body"></p>
     <footer class="modal-footer"></footer>
@@ -59,17 +58,15 @@ export const createModal = (type, message, title = '') => {
         };
 
         // 5) 이벤트 바인딩
-        let confirmFn = () => true, cancelValue = false;
+        let cancelValue = false;
         const modalInput = modalBody.querySelector('.modal-input');
         const [confirmBtn, cancelBtn] = footer.querySelectorAll('button');
         if(modalInput != null){
             cancelValue = null;
-            confirmFn = () => modalInput.value
             modalInput.addEventListener('keydown', (e) => e.key === 'Enter' && confirmBtn.click());
         }
 
-        confirmBtn.onclick = () => close(confirmFn())
-        overlay.querySelector('.close-btn').onclick = () => close(cancelValue)
+        confirmBtn.onclick = () => close(modalInput?.value || true)
         cancelBtn && (cancelBtn.onclick = () => close(cancelValue));
         overlay.onclick = (e) => e.target === overlay && close(cancelValue); // 외부 클릭시 닫히게
         document.addEventListener('keydown', (e) => e.key === 'Escape' && close(cancelValue), {once: true});
