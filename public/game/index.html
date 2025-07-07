@@ -8,21 +8,6 @@
     <script type="module" src="js/logic.js"></script>
 </head>
 <body>
-<aside class="side">
-    <section id="rank-panel" class="panel">
-        <div class="panel-title">순위</div>
-        <div id="rank-graph" class="rank-graph"></div>
-    </section>
-    <section id="message-panel" class="panel">
-        <div class="panel-title">대화</div>
-        <div id="message-list" class="message-list"></div>
-    </section>
-    <section id="answer-panel" class="panel">
-        <div id="answer-label" class="panel-title">정답</div>
-        <ul id="hint-list" class="hint-list"></ul>
-    </section>
-</aside>
-
 <section class="board">
     <!-- 상단: 주제 -->
     <div class="board-header">
@@ -38,6 +23,21 @@
         <button id="next-btn" class="button" hidden>다음 문제 ➡</button>
     </div>
 </section>
+
+<aside class="side">
+    <section id="answer-panel" class="panel" style="flex: 5">
+        <div id="answer-label" class="panel-title">정답</div>
+        <ul id="hint-list" class="hint-list"></ul>
+    </section>
+    <section id="message-panel" class="panel" style="flex: 13">
+        <div class="panel-title">대화</div>
+        <div id="message-list" class="message-list"></div>
+    </section>
+    <section id="rank-panel" class="panel" style="flex: 8">
+        <div class="panel-title">순위</div>
+        <div id="rank-graph" class="rank-graph"></div>
+    </section>
+</aside>
 
 <button id="home-btn" class="home-btn">🏠홈 화면</button>
 </body>

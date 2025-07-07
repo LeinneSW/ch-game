@@ -6,7 +6,6 @@
 }
 
 .panel{
-    flex: 1;
     height: 0;
     box-shadow: 0 0 9px 1px #000;
     border-radius: 22px;
