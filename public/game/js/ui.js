@@ -135,6 +135,20 @@ export const updateQuiz = (gameState) => {
 
 export function updateRankGraph(scores){
     const top = Object.values(scores).sort((a, b) => b.score - a.score).slice(0, 3); // 상위 3명
+    if(top.length < 3){
+        top.length === 0 && top.push({
+            profile: {nickname: '유저1'},
+            score: Math.floor(Math.random() * 200 + 801)
+        })
+        top.length === 1 && top.push({
+            profile: {nickname: '유저2'},
+            score: Math.floor(Math.random() * 400 + 401)
+        })
+        top.length === 2 && top.push({
+            profile: {nickname: '유저3'},
+            score: Math.floor(Math.random() * 100 + 101)
+        })
+    }
     if(top.length < 1){
         return;
     }
