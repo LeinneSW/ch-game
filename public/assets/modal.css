@@ -1,6 +1,6 @@
 /* ---------- 오버레이 ---------- */
 .modal-overlay{
-    z-index: 99;
+    z-index: 9999;
     position: fixed;
     inset: 0;
     display: grid;
@@ -27,7 +27,6 @@
     transition: opacity .25s ease, visibility 0s linear .25s;
 }
 
-/* ---------- 모달 박스 ---------- */
 .modal{
     background: #fff;
     padding: 1.5rem 2rem;
@@ -51,22 +50,6 @@
 
 .modal-title{
     margin-top: 0;
-}
-
-/* ---------- 헤더 ---------- */
-.close-btn{
-    position: absolute;
-    top: .5rem;
-    right: .5rem;
-    background: none;
-    border: none;
-    font-size: 1.5rem;
-    cursor: pointer;
-}
-
-.close-btn:focus-visible{
-    outline: 2px solid #000;
-    outline-offset: 2px;
 }
 
 /* ---------- 푸터 ---------- */
