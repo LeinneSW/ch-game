@@ -6,6 +6,13 @@ const modalInnerHTML = `
 </div>
 `;
 
+const createModalButton = (text, className) => {
+    const b = document.createElement('button');
+    b.textContent = text;
+    b.className = `modal-button ${className}`;
+    return b;
+}
+
 /**
  * @param {{
  *   type: 'alert' | 'confirm' | 'prompt',
@@ -28,23 +35,16 @@ export const createModal = ({type, message, title, backdrop}) => {
         modalBody.innerHTML = message.trim().replace(/\n/g, '<br>');
 
         const footer = overlay.querySelector('.modal-footer');
-        const btn = (text, className) => {
-            const b = document.createElement('button');
-            b.textContent = text;
-            b.className = `modal-button ${className}`;
-            return b;
-        };
-
+        footer.append(createModalButton('확인', 'primary'));
         switch(type){
             case 'alert':
-                footer.append(btn('확인', 'primary'));
                 break;
             case 'confirm':
-                footer.append(btn('확인', 'primary'), btn('취소', 'ghost'));
+                footer.append(createModalButton('취소', 'ghost'));
                 break;
             case 'prompt':
                 modalBody.innerHTML += '<br><input type="text" class="modal-input">';
-                footer.append(btn('확인', 'primary'), btn('취소', 'ghost'));
+                footer.append(createModalButton('취소', 'ghost'));
                 break;
             default:
                 throw new Error(`Unknown modal type: ${type}`);
