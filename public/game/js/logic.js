@@ -7,13 +7,13 @@ import {createModal} from "../../util/modal.js";
 const scores = getScores()
 const gameState = getGameState()
 
-const connectChannel = async (client, channelId) => {
+const connectChannel = async (client) => {
     let liveStatus;
     try{
-        liveStatus = await client.live.status(channelId);
+        liveStatus = await client.live.status(getChannelId());
     }catch(e){}
     if(typeof liveStatus !== 'object' || liveStatus?.chatChannelId == null){ // liveStatus nullable 방지
-        setTimeout(() => connectChannel(client, channelId), 1000); // 1초뒤 재시도
+        setTimeout(() => connectChannel(client), 1000); // 1초뒤 재시도
         return;
     }
 
@@ -24,7 +24,7 @@ const connectChannel = async (client, channelId) => {
         startTime = Date.now();
         chzzkChat.requestRecentChat(50)
     })
-    chzzkChat.on('disconnect', () => setTimeout(() => connectChannel(client, channelId), 1000))
+    chzzkChat.on('disconnect', () => setTimeout(() => connectChannel(client), 1000))
     chzzkChat.on('chat', chat => {
         const message = chat.message;
         const date = +chat.time || Date.now();
@@ -116,12 +116,7 @@ function lockHistory() {
     history.pushState(null, '', location.href);     // 더미 스택 추가
 }
 
-window.addEventListener('load', () => {
-    let channelId = getChannelId()
-    if(!channelId || !gameState){
-        location.href = '/home/';
-        return;
-    }
+window.addEventListener('load', async () => {
     document.getElementById('home-btn').onclick = async () => {
         const modalOptions = {
             type: 'confirm',
@@ -150,6 +145,6 @@ window.addEventListener('load', () => {
             gameBaseUrl: "/cors/game"
         }
     });
-    connectChannel(client, channelId).then(() => {});
+    connectChannel(client).then(() => {});
 });
 
