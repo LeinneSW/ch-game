@@ -1,9 +1,8 @@
-import {ChzzkClient} from "https://cdn.skypack.dev/chzzk"
-import {loadQuizzes, saveQuizzes, getChannelId, setChannelId, shuffle, resetChannelId} from '../../util/util.js';
+import {loadQuizzes, saveQuizzes, shuffle} from '../../util/util.js';
 import {resetScores, setGameState} from "../../game/js/data.js";
 import {createModal} from "../../util/modal.js";
 
-function render(){
+const renderQuizList = () => {
     const list = document.getElementById('topic-list');
     list.innerHTML = '';
     const quizzes = loadQuizzes();
@@ -25,7 +24,6 @@ function render(){
              */
             const copyQuiz = {...quiz}
             shuffle(copyQuiz.items)
-            copyQuiz.items.forEach((item) => !Array.isArray(item.aliases) && (item.aliases = []))
             const gameState = {
                 round: 0,
                 roundLength: copyQuiz.items.length - 1, // TODO: 라운드 개수 조절 기능
@@ -42,96 +40,58 @@ function render(){
             if(confirm(`선택된 주제 '${quiz.topic}'을(를) 제거하시겠습니까?`)){
                 quizzes.splice(index, 1);
                 saveQuizzes(quizzes);
-                render();
+                renderQuizList();
             }
         };
     });
 }
 
-window.addEventListener('load', async () => {
-    const client = new ChzzkClient({
-        baseUrls: {
-            chzzkBaseUrl: "/cors/chzzk",
-            gameBaseUrl: "/cors/game"
-        }
-    });
-
-    let channelId = getChannelId()
-    if(channelId.length !== 32){
-        const modalOptions = {
-            type: 'prompt',
-            message: '본인의 치지직 닉네임 혹은 채널 ID를 입력해주세요',
-            backdrop: 'static',
-        }
-        channelId = await createModal(modalOptions)
+const parseQuiz = (json) => {
+    const {topic, description, items} = json;
+    if(typeof topic !== 'string' || typeof description !== 'string' || !Array.isArray(items)){
+        throw new Error('데이터 구조가 잘못되었습니다.\n올바른 구조: {topic: string, description: string, items: QuizItem[]}');
     }
-    let liveDetail;
-    try{
-        channelId.length === 32 && (liveDetail = await client.live.detail(channelId));
-    }catch(e){}
-    if(liveDetail == null || typeof liveDetail !== 'object'){
-        let channel = null
+    for(const index in items){
+        const {word, hints} = items[index];
+        if(typeof word !== 'string' || !Array.isArray(hints)){
+            throw new Error('QuizItem 구조가 올바르지 않습니다.\n올바른 구조: {word: string, hints: string[], aliases: string[]}');
+        }
+        items[index].aliases ??= [] // 외래어 등을 위해 추가(후르츠, 프루트 등)
+    }
+    return {topic, description, items}
+}
+
+const uploadQuiz = async (e) => {
+    const quizzes = loadQuizzes();
+    for(const file of e.target.files){
+        let json
         try{
-            const channelList = await client.search.channels(channelId); // 닉네임으로 판단하여 채널 검색 수행
-            channel = channelList.channels.find(channel => channel.channelName === channelId); // '정확히'일치하는 닉네임 탐색
+            json = JSON.parse(await file.text())
         }catch{}
-        if(!channel){
-            resetChannelId()
+        if(!json){
             const modalOptions = {
                 type: 'alert',
-                message: '잘못된 닉네임 혹은 방송한 이력이 없어 접속에 실패했습니다'
+                message: `'${file.name}'에 대해 문제 발생.\n올바른 JSON 파일이 아닙니다.`
             }
-            await createModal(modalOptions)
-            setTimeout(() => location.reload(), 500);
-            return
+            await createModal(modalOptions);
+            continue;
         }
-        setChannelId(channel.channelId)
-    }else if(liveDetail.chatChannelId == null){
-        const modalOptions = {
-            type: 'alert',
-            message: '현재 방송이 19세로 설정되어있습니다.\n19세 해제 후 이용 부탁드립니다. (19세 설정시 채팅 조회 불가)'
+        try{
+            const quiz = parseQuiz(json);
+            quizzes.push(quiz);
+        }catch(e){
+            await createModal({
+                type: 'alert',
+                message: `'${file.name}'에 대해 문제 발생.\n${e.message}`
+            })
         }
-        await createModal(modalOptions)
     }
-    render();
+    saveQuizzes(quizzes);
+    renderQuizList();
+}
 
+window.addEventListener('load', async () => {
+    renderQuizList();
     const file = document.getElementById('file-input');
-    file.addEventListener('change', async (e) => {
-        const quizzes = loadQuizzes();
-        for(const file of e.target.files){
-            try{
-                const txt = await file.text()
-                const {topic, description, items} = JSON.parse(txt);
-                if(typeof topic !== 'string' || typeof description !== 'string' || !Array.isArray(items)){
-                    const modalOptions = {
-                        type: 'alert',
-                        message: `데이터 구조가 잘못되었습니다. '${file.name}'\n올바른 구조: {topic: str, description: str, items: QuizItem[]}`
-                    }
-                    await createModal(modalOptions)
-                    continue;
-                }
-                let valid = true
-                for(const {word, hints} of items){
-                    if(typeof word !== 'string' || !Array.isArray(hints)){
-                        valid = false
-                        const modalOptions = {
-                            type: 'alert',
-                            message: `단어 정의가 잘못되었습니다. '${file.name}'\n올바른 구조: [{word: string, hints: string[]}, ...]`
-                        }
-                        await createModal(modalOptions)
-                        break
-                    }
-                }
-                valid && quizzes.push({topic, description, items});
-            }catch(e){
-                const modalOptions = {
-                    type: 'alert',
-                    message: `잘못된 파일: '${file.name}'\n올바른 JSON 파일이 아닙니다.`
-                }
-                await createModal(modalOptions);
-            }
-        }
-        saveQuizzes(quizzes);
-        render();
-    });
+    file.addEventListener('change', uploadQuiz);
 })
