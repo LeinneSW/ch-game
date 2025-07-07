@@ -47,35 +47,45 @@ const connectChannel = async (client, channelId) => {
         }
 
         addMessage(chat.profile, message, date, colorData, emojiList);
-        startTime <= date && checkQuizAnswer(chat.profile, message.trim())
+        startTime <= date && checkQuizAnswer(message.trim(), chat.profile)
     });
     chzzkChat.connect().catch(() => {});
 }
 
-function checkQuizAnswer(profile, answer){
+function checkQuizAnswer(answer, profile){
     if(gameState.solved){ // 이미 정답을 맞춘 경우
         return
     }
 
     const currentItem = gameState.quiz.items[gameState.round];
-    if(currentItem.word !== answer && !currentItem.aliases.includes(answer)){ // 정답이 아닌 경우
-        return
+    if(profile == null){
+        if(answer != null){
+            return
+        }
+        gameState.solved = true;
+        setGameState(gameState)
+        createModal({
+            type: 'alert',
+            message: '아무도 정답을 맞추지 못했습니다.'
+        }).then(() => nextRound())
+    }else if(currentItem.word === answer || currentItem.aliases.includes(answer)){
+        gameState.solved = true;
+        setGameState(gameState)
+
+        scores[profile.userIdHash] ??= {
+            profile,
+            score: 0
+        }
+        scores[profile.userIdHash].score += 100;
+        setScores(scores)
+        updateRankGraph(scores);
+        createModal({
+            type: 'alert',
+            title: `${profile.nickname}님 정답!`,
+            message: `정답: ${answer}`,
+        }).then(() => nextRound())
+        // TODO: fanfare effect
     }
-
-    gameState.solved = true;
-    setGameState(gameState)
-
-    document.getElementById('next-btn').hidden = false;
-    scores[profile.userIdHash] ??= {
-        profile,
-        score: 0
-    }
-    scores[profile.userIdHash].score += 100;
-    setScores(scores)
-    updateRankGraph(scores);
-
-    // TODO: 정답자 및 정답 modal
-    // TODO: fanfare effect
 }
 
 function nextRound(){
@@ -85,10 +95,20 @@ function nextRound(){
 
     if(gameState.round >= gameState.roundLength){
         location.href = '/result/';
-        return;
     }
-    updateQuiz(gameState)
-    updateRankGraph(scores);
+    renderRound();
+}
+
+const renderRound = () => {
+    const showChar = [];
+    const chosungList = updateQuiz(gameState)
+    chosungList.forEach((li, index) => {
+        li.onclick = () => {
+            li.textContent = (showChar[index] = !showChar[index]) ? li.dataset.char : li.dataset.cho;
+            showChar.filter(Boolean).length === chosungList.length && checkQuizAnswer()
+        };
+    })
+    updateRankGraph(scores)
 }
 
 // 실수로 인한 페이지 이동 방지
@@ -114,12 +134,11 @@ window.addEventListener('load', () => {
             location.href = '/home/'
         }
     };
-    document.getElementById('next-btn').onclick = nextRound;
+    document.getElementById('next-btn').onclick = () => nextRound
     if(gameState.solved){
         nextRound()
     }else{
-        updateQuiz(gameState)
-        updateRankGraph(scores)
+        renderRound();
     }
 
     lockHistory();

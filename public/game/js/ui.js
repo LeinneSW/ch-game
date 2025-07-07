@@ -121,20 +121,16 @@ export const updateQuiz = (gameState) => {
     const nextBtn = document.getElementById('next-btn');
     nextBtn.hidden = !gameState.solved;
 
-    const chosungList = document.getElementById('chosung-list');
-    chosungList.innerHTML = ''; // 기존 단어 초기화
+    const csListElement = document.getElementById('chosung-list');
+    csListElement.innerHTML = ''; // 기존 단어 초기화
     toChosung(currentWord).forEach((cho, index) => {
         const li = document.createElement('li');
         li.className = 'chosung-item'
         li.dataset.char = currentWord[index];
         li.textContent = li.dataset.cho = cho;
-
-        let isChosung = true;
-        li.onclick = () => {
-            li.textContent = (isChosung = !isChosung) ? li.dataset.cho : li.dataset.char;
-        };
-        chosungList.appendChild(li);
+        csListElement.appendChild(li);
     });
+    return csListElement.querySelectorAll('li')
 }
 
 export function updateRankGraph(scores){
