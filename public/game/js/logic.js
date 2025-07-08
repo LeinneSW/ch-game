@@ -1,5 +1,5 @@
 import {ChzzkClient} from "https://cdn.skypack.dev/chzzk"
-import {addMessage, clearMessageList, convertColorCode, updateQuiz, updateRankGraph} from "./ui.js";
+import {addMessage, clearMessageList, convertColorCode, updateQuiz, updateRankGraph, updateSteamerInfo} from "./ui.js";
 import {getChannelId, resetChannelId, setChannelId} from '../../util/util.js';
 import {getGameState, getScores, resetGameState, resetScores, setGameState, setScores} from "./data.js";
 import {createModal} from "../../util/modal.js";
@@ -187,7 +187,7 @@ window.addEventListener('load', async () => {
         await createModal(modalOptions)
     }
     liveDetail.channel.channelId !== channelId && setChannelId(liveDetail.channel.channelId)
-    // TODO: channel avatar, nickname ui 추가
+    updateSteamerInfo(liveDetail.channel).catch(console.error)
     connectChannel(client).then(() => {});
 });
 

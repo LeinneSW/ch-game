@@ -33,6 +33,15 @@ export const escapeHTML = (s) => {
     return s.replace(/[&<>"']/g, m => htmlEntity[m]);
 }
 
+export const updateSteamerInfo = async (channel) => {
+    const nickname = document.getElementById('streamer-name');
+    const avatar = document.getElementById('streamer-avatar');
+    const defaultURL = avatar.src;
+    avatar.src = channel.channelImageUrl || defaultURL;
+    avatar.onerror = () => avatar.src = defaultURL;
+    nickname.textContent = channel.channelName;
+}
+
 export const addMessage = (profile, message, msecs = Date.now(), colorData = 'white', emojiList = {}) => {
     const messageList = document.getElementById('message-list');
     const messageDiv = document.createElement('div')
