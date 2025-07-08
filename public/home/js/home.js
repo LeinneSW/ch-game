@@ -3,13 +3,14 @@ import {resetScores, setGameState} from "../../game/js/data.js";
 import {createModal} from "../../util/modal.js";
 
 const renderQuizList = () => {
-    const list = document.getElementById('topic-list');
-    list.innerHTML = '';
+    const quizListElement = document.getElementById('quiz-list');
+    quizListElement.innerHTML = '';
     const quizzes = loadQuizzes();
     if(!quizzes.length){
-        list.innerHTML = '<p>추가된 주제가 없습니다.</p>';
+        quizListElement.innerHTML = '<p>추가된 주제가 없습니다.</p>';
         return;
     }
+
     quizzes.forEach((quiz, index) => {
         const card = document.createElement('article');
         card.className = 'card';
@@ -18,10 +19,6 @@ const renderQuizList = () => {
             <h2>${quiz.topic}</h2>
             <p>${quiz.description}</p>`;
         card.onclick = () => {
-            /**
-             * Quiz: {topic: string, description: string, items: QuizItem[]}
-             * QuizItem: {word: string, aliases: string[], hints: string[]}
-             */
             const copyQuiz = {...quiz}
             shuffle(copyQuiz.items)
             const gameState = {
@@ -34,7 +31,7 @@ const renderQuizList = () => {
             resetScores()
             location.href = '/game/';
         };
-        list.appendChild(card);
+        quizListElement.appendChild(card);
         card.querySelector('.del-btn').onclick = (e) => {
             e.stopPropagation(); // 카드 클릭 이벤트 막기
             if(confirm(`선택된 주제 '${quiz.topic}'을(를) 제거하시겠습니까?`)){
@@ -46,6 +43,10 @@ const renderQuizList = () => {
     });
 }
 
+/**
+ * @typedef {topic: string, description: string, items: QuizItem[]} Quiz
+ * @typedef {word: string, aliases: string[], hints: string[]} QuizItem
+ */
 const parseQuiz = (json) => {
     const {topic, description, items} = json;
     if(typeof topic !== 'string' || typeof description !== 'string' || !Array.isArray(items)){
@@ -56,7 +57,7 @@ const parseQuiz = (json) => {
         if(typeof word !== 'string' || !Array.isArray(hints)){
             throw new Error('QuizItem 구조가 올바르지 않습니다.\n올바른 구조: {word: string, hints: string[], aliases: string[]}');
         }
-        items[index].aliases ??= [] // 외래어 등을 위해 추가(후르츠, 프루트 등)
+        items[index].aliases ??= [] // 외래어 등을 위해 추가(프루트, 푸르트 등)
     }
     return {topic, description, items}
 }
