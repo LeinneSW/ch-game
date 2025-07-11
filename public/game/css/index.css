@@ -1,7 +1,7 @@
 @import url("board.css");
 @import url("chat.css");
-@import url("rank.css");
 @import url("sidebar.css");
+@import url("leaderboard.css");
 
 :root{
     --panel-spacing: 22px;

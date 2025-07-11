@@ -142,41 +142,6 @@ export const updateQuiz = (gameState) => {
     return csListElement.querySelectorAll('li')
 }
 
-export function updateRankGraph(scores){
-    const top = Object.values(scores).sort((a, b) => b.score - a.score).slice(0, 3); // 상위 3명
-    if(top.length < 3){
-        top.length === 0 && top.push({
-            profile: {nickname: '유저1'},
-            score: Math.floor(Math.random() * 200 + 801)
-        })
-        top.length === 1 && top.push({
-            profile: {nickname: '유저2'},
-            score: Math.floor(Math.random() * top[0].score * 0.25 + top[0].score * 0.6)
-        })
-        top.length === 2 && top.push({
-            profile: {nickname: '유저3'},
-            score: Math.floor(Math.random() * top[1].score * 0.3 + top[1].score * 0.4)
-        })
-    }
-    if(top.length < 1){
-        return;
-    }
-
-    const rankGraph = document.getElementById('rank-graph');
-    rankGraph.innerHTML = '';
-    for(const i of [1, 0, 2]){ // 2 1 3 순으로 출력
-        const data = top[i]
-        const bar = document.createElement('div');
-        bar.className = 'bar';
-        bar.style.height = `${(data?.score || 0) * 100 / top[0].score}%`;
-        if(data){
-            bar.innerHTML = `<span class="bar-score">${data.score}</span>
-                <span class="bar-name">${escapeHTML(data.profile.nickname)}</span>`;
-        }
-        rankGraph.appendChild(bar);
-    }
-}
-
 window.addEventListener('load', async () => {
     const colorCodes = await (await fetch('/colorCodes')).json();
     for(const index in colorCodes){
