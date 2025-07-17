@@ -19,9 +19,13 @@ const createModalButton = (text, className) => {
  *   message: string,
  *   title?: string,
  *   backdrop?: 'static' | 'none' | 'dismiss'
+ *   defaultInput?: string,
+ *   placeholder?: string
  * }} modalOptions
+ *
+ * @return {Promise<string | boolean | null>}
  */
-export const createModal = ({type, message, title, backdrop}) => {
+export const createModal = ({type, message, title, backdrop, defaultInput, placeholder}) => {
     return new Promise((resolve) => {
         const overlay = document.createElement('div');
         overlay.id = 'overlay';
@@ -44,6 +48,9 @@ export const createModal = ({type, message, title, backdrop}) => {
                 break;
             case 'prompt':
                 modalBody.innerHTML += '<br><input type="text" class="modal-input">';
+                const input = modalBody.querySelector('.modal-input');
+                defaultInput && (input.value = defaultInput);
+                placeholder && (input.placeholder = placeholder);
                 footer.append(createModalButton('취소', 'ghost'));
                 break;
             default:
