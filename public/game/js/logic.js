@@ -1,12 +1,9 @@
 import {ChzzkClient} from "https://cdn.skypack.dev/chzzk"
 import {addMessage, clearMessageList, convertColorCode, updateQuiz, updateSteamerInfo} from "./ui.js";
 import {getChannelId, resetChannelId, setChannelId} from '../../util/util.js';
-import {getGameState, getScores, resetGameState, resetScores, setGameState, setScores} from "./data.js";
+import {getGameState, getScores, resetGameState, resetScores, saveGameState, saveScores} from "./data.js";
 import {createModal} from "../../util/modal.js";
 import {updateRankGraph} from "./leaderboard.js";
-
-const scores = getScores()
-const gameState = getGameState()
 
 const connectChannel = async (client) => {
     let liveStatus;
@@ -54,31 +51,33 @@ const connectChannel = async (client) => {
 }
 
 function checkQuizAnswer(answer, profile){
+    const gameState = getGameState()
     if(gameState.solved){ // 이미 정답을 맞춘 경우
         return
     }
 
+    const scores = getScores()
     const currentItem = gameState.quiz.items[gameState.round];
     if(profile == null){
         if(answer != null){
             return
         }
         gameState.solved = true;
-        setGameState(gameState)
+        saveGameState()
         createModal({
             type: 'alert',
             message: '아무도 정답을 맞추지 못했습니다.'
         }).then(() => nextRound())
     }else if(currentItem.word === answer || currentItem.aliases.includes(answer)){
         gameState.solved = true;
-        setGameState(gameState)
+        saveGameState()
 
         scores[profile.userIdHash] ??= {
             profile,
             score: 0
         }
         scores[profile.userIdHash].score += 100;
-        setScores(scores)
+        saveScores()
         updateRankGraph(scores);
         createModal({
             type: 'alert',
@@ -90,9 +89,10 @@ function checkQuizAnswer(answer, profile){
 }
 
 function nextRound(){
+    const gameState = getGameState()
     ++gameState.round
     gameState.solved = false;
-    setGameState(gameState);
+    saveGameState();
 
     if(gameState.round >= gameState.roundLength){
         location.href = '/result/';
@@ -102,19 +102,14 @@ function nextRound(){
 
 const renderRound = () => {
     const showChar = [];
-    const chosungList = updateQuiz(gameState)
+    const chosungList = updateQuiz(getGameState())
     chosungList.forEach((li, index) => {
         li.onclick = () => {
             li.textContent = (showChar[index] = !showChar[index]) ? li.dataset.char : li.dataset.cho;
             showChar.filter(Boolean).length === chosungList.length && checkQuizAnswer()
         };
     })
-    updateRankGraph(scores)
-}
-
-// 실수로 인한 페이지 이동 방지
-function lockHistory() {
-    history.pushState(null, '', location.href);     // 더미 스택 추가
+    updateRankGraph(getScores())
 }
 
 window.addEventListener('load', async () => {
@@ -131,10 +126,15 @@ window.addEventListener('load', async () => {
         }
     };
     document.getElementById('next-btn').onclick = () => nextRound
-    if(gameState.solved){
+    if(getGameState().solved){
         nextRound()
     }else{
         renderRound();
+    }
+
+    // 실수로 인한 페이지 이동 방지
+    function lockHistory() {
+        history.pushState(null, '', location.href) // 더미 스택 추가
     }
 
     lockHistory();

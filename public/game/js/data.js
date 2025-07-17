@@ -3,40 +3,59 @@ import {shuffle} from "../../util/util.js";
 const SCORE_KEY = 'scores'
 const GAME_STATE_KEY = 'gameState'
 
+let cachedScores = {};
+let cachedGameState = null;
+
 export const getGameState = () => {
+    if(cachedGameState) return cachedGameState;
     try{
-        return JSON.parse(sessionStorage.getItem(GAME_STATE_KEY));
+        cachedGameState = JSON.parse(sessionStorage.getItem(GAME_STATE_KEY));
+        return cachedGameState
     }catch{}
     resetGameState();
+    return null;
 }
 
-export const setGameState = (state) => {
-    sessionStorage.setItem(GAME_STATE_KEY, JSON.stringify(state));
+export const setGameState = (newState) => {
+    cachedGameState = newState;
+    sessionStorage.setItem(GAME_STATE_KEY, JSON.stringify(newState));
+}
+
+export const saveGameState = () => {
+    if(!cachedGameState) return;
+    sessionStorage.setItem(GAME_STATE_KEY, JSON.stringify(cachedGameState));
 }
 
 export const resetGameState = () => {
+    cachedGameState = null
     sessionStorage.removeItem(GAME_STATE_KEY);
 }
 
-export const restartGame = (state) => {
-    state ??= getGameState()
-    state.round = 0;
-    state.solved = false;
-    shuffle(state.quiz.items)
-    setScores({})
+export const restartGame = () => {
+    if(!cachedGameState) return;
+    cachedGameState.round = 0
+    cachedGameState.solved = false
+    shuffle(cachedGameState.quiz.items)
+    resetScores()
+    saveGameState()
 }
 
 export const getScores = () => {
+    if(cachedScores) return cachedScores;
     try{
-        return JSON.parse(sessionStorage.getItem(SCORE_KEY));
+        cachedScores = JSON.parse(sessionStorage.getItem(SCORE_KEY));
+        return cachedScores
     }catch{}
     resetScores();
     return {}
 }
 
-export const setScores = (scores) => {
-    sessionStorage.setItem(SCORE_KEY, JSON.stringify(scores));
+export const saveScores = () => {
+    if(!cachedScores) return;
+    sessionStorage.setItem(SCORE_KEY, JSON.stringify(cachedScores))
 }
+
 export const resetScores = () => {
-    sessionStorage.setItem(SCORE_KEY, '{}');
+    cachedScores = {}
+    sessionStorage.setItem(SCORE_KEY, '{}')
 }
