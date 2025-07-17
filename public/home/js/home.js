@@ -26,7 +26,10 @@ const renderQuizList = () => {
                 defaultInput: quiz.items.length + ''
             }).then(input => {
                 let roundLength = Number((input + '').trim());
-                if(!isFinite(roundLength)) return;
+                if(!isFinite(roundLength)){
+                    createModal({type: 'alert', message: '올바른 숫자를 입력해주세요.'}).then(() => card.click());
+                    return
+                }
 
                 roundLength = Math.max(1, Math.min(roundLength, quiz.items.length))
                 setGameState({
