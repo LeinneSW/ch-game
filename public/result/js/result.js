@@ -1,18 +1,19 @@
 import {getScores, resetGameState, resetScores, restartGame} from "../../game/js/data.js";
 
 window.addEventListener("load", () => {
-    const scores = getScores();
-    if(Object.keys(scores).length === 0){
-        location.href = '/home/';
-        return;
-    }
-
+    const scores = Object.values(getScores()).sort((a, b) => b.score - a.score);
     const list = document.getElementById('score-list');
-    Object.values(scores).sort((a, b) => b.score - a.score).forEach(({profile, score}, idx) => {
+    if(scores.length > 0){
+        scores.forEach(({profile, score}, idx) => {
+            const li = document.createElement('li');
+            li.textContent = `${idx + 1}. ${profile.nickname} — ${score} 점`;
+            list.appendChild(li);
+        });
+    }else{
         const li = document.createElement('li');
-        li.textContent = `${idx + 1}. ${profile.nickname} — ${score} 점`;
+        li.textContent = '정답자가 한 명도 없습니다';
         list.appendChild(li);
-    });
+    }
 
     const restartButton = document.getElementById('restart-button');
     restartButton.onclick = () => {
