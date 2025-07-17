@@ -19,17 +19,25 @@ const renderQuizList = () => {
             <h2>${quiz.topic}</h2>
             <p>${quiz.description}</p>`;
         card.onclick = () => {
-            const copyQuiz = {...quiz}
-            shuffle(copyQuiz.items)
-            const gameState = {
-                round: 0,
-                roundLength: copyQuiz.items.length - 1, // TODO: 라운드 개수 조절 기능
-                solved: false,
-                quiz: copyQuiz,
-            };
-            setGameState(gameState);
-            resetScores()
-            location.href = '/game/';
+            createModal({
+                type: 'prompt',
+                title: '진행할 라운드 수',
+                message: `진행할 총 라운드 수를 입력해주세요(최대 라운드: ${quiz.items.length})`,
+                defaultInput: quiz.items.length + ''
+            }).then(input => {
+                let roundLength = Number((input + '').trim());
+                if(!isFinite(roundLength)) return;
+
+                roundLength = Math.max(1, Math.min(roundLength, quiz.items.length))
+                setGameState({
+                    round: 0,
+                    roundLength,
+                    solved: false,
+                    quiz: {...quiz, items: shuffle(quiz.items)},
+                });
+                resetScores()
+                location.href = '/game/';
+            })
         };
         quizListElement.appendChild(card);
         card.querySelector('.del-btn').onclick = (e) => {

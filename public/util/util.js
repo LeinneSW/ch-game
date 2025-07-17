@@ -34,9 +34,11 @@ export const resetChannelId = () => {
     localStorage.removeItem(CHANNEL_ID_KEY);
 }
 
-export const shuffle = (result) => { // 피셔–예이츠
+export const shuffle = (array) => { // 피셔–예이츠
+    const result = [...array];
     for(let i = result.length - 1; i > 0; i--){
         const j = Math.floor(Math.random() * (i + 1));
         [result[i], result[j]] = [result[j], result[i]];
     }
+    return result;
 }
