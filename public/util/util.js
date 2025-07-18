@@ -31,7 +31,7 @@ export const setChannelId = (channelId) => {
 }
 
 export const resetChannelId = () => {
-    localStorage.removeItem(CHANNEL_ID_KEY);
+    sessionStorage.removeItem(CHANNEL_ID_KEY);
 }
 
 export const shuffle = (array) => { // 피셔–예이츠
