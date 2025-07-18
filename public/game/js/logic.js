@@ -172,7 +172,7 @@ window.addEventListener('load', async () => {
         resetChannelId()
         const modalOptions = {
             type: 'alert',
-            message: '잘못된 닉네임 혹은 방송한 이력이 없어 접속에 실패했습니다'
+            message: '해당 채널을 찾지 못했습니다. 채널명 혹은 채널 ID를 "정확히" 입력해주세요.'
         }
         await createModal(modalOptions)
         // TODO: 재접속 기능 구현
