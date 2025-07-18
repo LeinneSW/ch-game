@@ -1,5 +1,5 @@
-import {loadQuizzes, saveQuizzes, shuffle} from '../../util/util.js';
-import {resetScores, setGameState} from "../../game/js/data.js";
+import {shuffle} from '../../util/array.js';
+import {loadQuizzes, saveQuizzes, setGameState} from "../../game/js/data.js";
 import {createModal} from "../../util/modal.js";
 
 const renderQuizList = () => {
@@ -35,10 +35,10 @@ const renderQuizList = () => {
                 setGameState({
                     round: 0,
                     roundLength,
+                    scores: {},
                     solved: false,
                     quiz: {...quiz, items: shuffle(quiz.items)},
                 });
-                resetScores()
                 location.href = '/game/';
             })
         };
@@ -53,19 +53,6 @@ const renderQuizList = () => {
         };
     });
 }
-
-/**
- * @typedef {Object} QuizItem
- * @property {string} word - 정답 단어
- * @property {string[]} aliases - 동의어 목록
- */
-
-/**
- * @typedef {Object} Quiz
- * @property {string} topic - 주제
- * @property {string} description - 설명
- * @property {QuizItem[]} items - 퀴즈 항목 목록
- */
 
 /**
  * @param {Object} json

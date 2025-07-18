@@ -1,7 +1,10 @@
-import {getScores, resetGameState, resetScores, restartGame} from "../../game/js/data.js";
+import {getGameState, resetGameState, restartGame} from "../../game/js/data.js";
 
 window.addEventListener("load", () => {
-    const scores = Object.values(getScores()).sort((a, b) => b.score - a.score);
+    const gameState = getGameState();
+    if(!gameState) location.href = '/home/';
+
+    const scores = Object.values(gameState.scores).sort((a, b) => b.score - a.score);
     const list = document.getElementById('score-list');
     if(scores.length > 0){
         scores.forEach(({profile, score}, idx) => {
@@ -22,7 +25,6 @@ window.addEventListener("load", () => {
     }
     const homeButton = document.getElementById('home-button');
     homeButton.onclick = () => {
-        resetScores()
         resetGameState()
         location.href = '/home/'
     }

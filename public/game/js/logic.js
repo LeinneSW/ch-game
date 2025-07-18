@@ -1,7 +1,6 @@
 import {ChzzkClient} from "https://cdn.skypack.dev/chzzk"
 import {addMessage, clearMessageList, convertColorCode, updateQuiz, updateSteamerInfo} from "./ui.js";
-import {getChannelId, resetChannelId, setChannelId} from '../../util/util.js';
-import {getGameState, getScores, resetGameState, resetScores, saveGameState, saveScores} from "./data.js";
+import {getChannelId, getGameState, resetChannelId, resetGameState, saveGameState, setChannelId} from "./data.js";
 import {createModal} from "../../util/modal.js";
 import {updateRankGraph} from "./leaderboard.js";
 
@@ -56,7 +55,6 @@ function checkQuizAnswer(answer, profile){
         return
     }
 
-    const scores = getScores()
     const currentItem = gameState.quiz.items[gameState.round];
     if(profile == null){
         if(answer != null){
@@ -70,15 +68,14 @@ function checkQuizAnswer(answer, profile){
         }).then(() => nextRound())
     }else if(currentItem.word === answer || currentItem.aliases.includes(answer)){
         gameState.solved = true;
-        saveGameState()
-
-        scores[profile.userIdHash] ??= {
+        gameState.scores[profile.userIdHash] ??= {
             profile,
             score: 0
         }
-        scores[profile.userIdHash].score += 100;
-        saveScores()
-        updateRankGraph(scores);
+        gameState.scores[profile.userIdHash].score += 100;
+        saveGameState()
+
+        updateRankGraph(gameState.scores);
         createModal({
             type: 'alert',
             title: `${profile.nickname}님 정답!`,
@@ -102,29 +99,30 @@ function nextRound(){
 
 const renderRound = () => {
     const showChar = [];
-    const chosungList = updateQuiz(getGameState())
+    const gameState = getGameState();
+    const chosungList = updateQuiz(gameState)
     chosungList.forEach((li, index) => {
         li.onclick = () => {
             li.textContent = (showChar[index] = !showChar[index]) ? li.dataset.char : li.dataset.cho;
             showChar.filter(Boolean).length === chosungList.length && checkQuizAnswer()
         };
     })
-    updateRankGraph(getScores())
+    updateRankGraph(gameState.scores)
 }
 
 window.addEventListener('load', async () => {
-    document.getElementById('home-btn').onclick = async () => {
+    document.getElementById('home-btn').onclick = () => {
         const modalOptions = {
             type: 'confirm',
             title: '게임 종료',
             message: '정말 진행중이던 게임을 종료하고 홈 화면으로 돌아가시겠습니까?',
         }
-        if(await createModal(modalOptions)){
-            resetScores()
+        createModal(modalOptions).then(() => {
             resetGameState()
             location.href = '/home/'
-        }
+        })
     };
+
     document.getElementById('next-btn').onclick = () => nextRound
     if(getGameState().solved){
         nextRound()
@@ -133,10 +131,7 @@ window.addEventListener('load', async () => {
     }
 
     // 실수로 인한 페이지 이동 방지
-    function lockHistory() {
-        history.pushState(null, '', location.href) // 더미 스택 추가
-    }
-
+    const lockHistory = () => history.pushState(null, '', location.href) // 더미 스택 추가
     lockHistory();
     window.addEventListener('popstate', lockHistory);
 
