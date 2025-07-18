@@ -55,8 +55,21 @@ const renderQuizList = () => {
 }
 
 /**
- * @typedef {topic: string, description: string, items: QuizItem[]} Quiz
- * @typedef {word: string, aliases: string[], hints: string[]} QuizItem
+ * @typedef {Object} QuizItem
+ * @property {string} word - 정답 단어
+ * @property {string[]} aliases - 동의어 목록
+ */
+
+/**
+ * @typedef {Object} Quiz
+ * @property {string} topic - 주제
+ * @property {string} description - 설명
+ * @property {QuizItem[]} items - 퀴즈 항목 목록
+ */
+
+/**
+ * @param {Object} json
+ * @returns {Quiz}
  */
 const parseQuiz = (json) => {
     const {topic, description, items} = json;

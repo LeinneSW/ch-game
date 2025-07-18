@@ -6,6 +6,17 @@ const GAME_STATE_KEY = 'gameState'
 let cachedScores = {};
 let cachedGameState = null;
 
+/**
+ * @typedef {Object} GameState
+ * @property {boolean} solved 문제 해결 여부
+ * @property {number} round 현재 라운드
+ * @property {number} roundLength 전체 라운드 수
+ * @property {Quiz} quiz
+ */
+
+/**
+ * @returns {GameState | null}
+ */
 export const getGameState = () => {
     if(cachedGameState) return cachedGameState;
     try{
