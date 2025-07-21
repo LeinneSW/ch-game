@@ -129,14 +129,14 @@ export const convertColorCode = (colorCode, userId, chatChannelId) => {
  */
 export const updateQuiz = (gameState) => {
     const topicTitle = document.getElementById('topic-title');
-    topicTitle.textContent = gameState.quiz.topic;
+    topicTitle.textContent = gameState.quizItems[gameState.round].topic;
 
-    const currentWord = gameState.quiz.items[gameState.round].word;
-    const currentHints = gameState.quiz.items[gameState.round].hints;
+    const currentWord = gameState.quizItems[gameState.round].word;
+    const currentHints = gameState.quizItems[gameState.round].hints;
 
     // UI 초기화
     const $roundInfo = document.getElementById('round-info');
-    $roundInfo.textContent = `라운드 ${gameState.round + 1}`;
+    $roundInfo.textContent = `라운드 ${gameState.round + 1} / ${gameState.roundLength}`;
 
     const $answerLabel = document.getElementById('answer-label');
     $answerLabel.innerText = currentWord;

@@ -55,7 +55,7 @@ function checkQuizAnswer(answer, profile){
         return
     }
 
-    const currentItem = gameState.quiz.items[gameState.round];
+    const currentItem = gameState.quizItems[gameState.round];
     if(profile == null){
         if(answer != null){
             return

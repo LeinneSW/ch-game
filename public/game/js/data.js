@@ -40,7 +40,8 @@ let cachedGameState = null;
  * @property {number} round 현재 라운드
  * @property {number} roundLength 전체 라운드 수
  * @property {Record<string, Score>} scores 현재 스코어
- * @property {Quiz} quiz
+ * @property {Record<string, string>} topics 선택된 주제
+ * @property {QuizItem[]} quizItems 퀴즈 항목
  */
 
 /**
