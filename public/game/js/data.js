@@ -8,22 +8,24 @@ let cachedGameState = null;
 
 /**
  * @typedef {Object} QuizItem
- * @property {string} word - 정답 단어
- * @property {string[]} aliases - 동의어 목록
+ * @property {string} topic 주제
+ * @property {string} word 정답 단어
+ * @property {string[]} hints 단어 힌트 목록
+ * @property {string[]} aliases 동의어 목록
  */
 
 /**
  * @typedef {Object} Quiz
- * @property {string} topic - 주제
- * @property {string} description - 설명
- * @property {QuizItem[]} items - 퀴즈 항목 목록
+ * @property {string} topic 주제
+ * @property {string} description 설명
+ * @property {QuizItem[]} items 퀴즈 항목 목록
  */
 
 /**
  * @typedef {Object} Profile
- * @property {string} userIdHash
- * @property {string} nickname
- * @property {string} profileImageUrl
+ * @property {string} userIdHash 유저 고유 ID
+ * @property {string} nickname 유저 이름
+ * @property {string} profileImageUrl 유저 프로필 사진
  */
 
 /**
