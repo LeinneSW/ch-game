@@ -5,15 +5,20 @@ const createLeaderboardItem = (profile) => {
     itemElement.className = 'leaderboard-item new-item';
     itemElement.id = profile.userIdHash;
 
-    const backgroundImageUrl = profile.profileImageUrl || '/assets/images/default-profile.png';
     itemElement.innerHTML = `
         <div class="score-background"></div>
         <div class="content-container">
             <div class="rank-number"></div>
-            <div class="profile-image" style="background-image: url('${backgroundImageUrl}')"></div>
+            <div class="profile-image"></div>
             <div class="user-info">${profile.nickname}</div>
             <div class="score-text"></div>
         </div>`;
+
+    const testImgUrl = new Image();
+    const profileImage = itemElement.querySelector('.profile-image');
+    testImgUrl.onload = () => profileImage.style.backgroundImage = `url('${profile.profileImageUrl}')`;
+    testImgUrl.onerror = () => profileImage.style.backgroundImage = `url('/assets/images/default-profile.png')`;
+    testImgUrl.src = profile.profileImageUrl;
 
     const itemsContainer = document.querySelector('.leaderboard-items-container');
     itemsContainer.appendChild(itemElement);
@@ -41,7 +46,7 @@ export function updateRankGraph(scores){
             itemElement.style.setProperty('--y-pos', calc(rankIndex));
             setTimeout(() => {
                 itemElement.classList.remove('new-item');
-                itemElement.style.transform = `translateY(${calc(+itemElement.dataset.rank)})`;
+                itemElement.style.transform = `translateY(${calc(itemElement.dataset.rank)})`;
             }, 300);
 
         }
