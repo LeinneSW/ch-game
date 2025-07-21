@@ -54,6 +54,13 @@ export const updateSteamerInfo = async (channel) => {
     nickname.textContent = channel.channelName;
 }
 
+/**
+ * @param {Object} profile
+ * @param {string} message
+ * @param {number} msecs
+ * @param {Record<string, unknown> | string} colorData
+ * @param {Object} emojiList
+ */
 export const addMessage = (profile, message, msecs = Date.now(), colorData = 'white', emojiList = {}) => {
     const messageList = document.getElementById('message-list');
     const messageDiv = document.createElement('div')
@@ -117,6 +124,9 @@ export const convertColorCode = (colorCode, userId, chatChannelId) => {
     return tier2ColorList[colorCode];
 }
 
+/**
+ * @param {GameState} gameState
+ */
 export const updateQuiz = (gameState) => {
     const topicTitle = document.getElementById('topic-title');
     topicTitle.textContent = gameState.quiz.topic;
@@ -155,6 +165,7 @@ export const updateQuiz = (gameState) => {
 }
 
 window.addEventListener('load', async () => {
+    /** @var {Record<string, unknown>[]} colorCodes */
     const colorCodes = await (await fetch('/colorCodes')).json();
     for(const index in colorCodes){
         const colorData = colorCodes[index];
