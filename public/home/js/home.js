@@ -185,9 +185,4 @@ window.addEventListener('load', async () => {
     // 컨트롤 패널 이벤트 리스너 추가
     document.getElementById('start-btn').onclick = startGame;
     document.getElementById('select-all-btn').onclick = selectAllQuizzes;
-    document.getElementById('clear-btn').onclick = () => {
-        selectedQuizzes.clear();
-        document.querySelectorAll('.card').forEach(card => card.classList.remove('selected'));
-        updateControlPanel();
-    };
 })
