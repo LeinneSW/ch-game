@@ -49,7 +49,7 @@ const connectChannel = async (client) => {
     chzzkChat.connect().catch(() => {});
 }
 
-function checkQuizAnswer(answer, profile){
+function checkQuizAnswer(inputValue, profile){
     const gameState = getGameState()
     if(gameState.solved){ // 이미 정답을 맞춘 경우
         return
@@ -57,7 +57,7 @@ function checkQuizAnswer(answer, profile){
 
     const currentItem = gameState.quizItems[gameState.round];
     if(profile == null){
-        if(answer != null){
+        if(inputValue != null){
             return
         }
         gameState.solved = true;
@@ -66,23 +66,27 @@ function checkQuizAnswer(answer, profile){
             type: 'alert',
             message: '아무도 정답을 맞추지 못했습니다.'
         }).then(() => nextRound())
-    }else if(currentItem.word === answer || currentItem.aliases.includes(answer)){
-        gameState.solved = true;
-        gameState.scores[profile.userIdHash] ??= {
-            profile,
-            score: 0
-        }
-        gameState.scores[profile.userIdHash].score += 100;
-        saveGameState()
-
-        updateRankGraph(gameState.scores);
-        createModal({
-            type: 'alert',
-            title: `${profile.nickname}님 정답!`,
-            message: `정답: ${answer}`,
-        }).then(() => nextRound())
-        // TODO: fanfare effect
+        return;
     }
+
+    const answerWord = currentItem.word.replaceAll(' ', '');
+    if(answerWord !== inputValue || currentItem.aliases.includes(inputValue)){
+        return;
+    }
+    gameState.solved = true;
+    gameState.scores[profile.userIdHash] ??= {
+        profile,
+        score: 0
+    }
+    gameState.scores[profile.userIdHash].score += 100;
+    saveGameState()
+
+    // TODO: fanfare effect
+    createModal({
+        type: 'alert',
+        title: `${profile.nickname}님 정답!`,
+        message: `정답: ${inputValue}`,
+    }).then(() => nextRound())
 }
 
 function nextRound(){
@@ -102,10 +106,14 @@ const renderRound = () => {
     const gameState = getGameState();
     const chosungList = updateQuiz(gameState)
     chosungList.forEach((li, index) => {
-        li.onclick = () => {
-            li.textContent = (showChar[index] = !showChar[index]) ? li.dataset.char : li.dataset.cho;
-            showChar.filter(Boolean).length === chosungList.length && checkQuizAnswer()
-        };
+        if(li.dataset.char === li.dataset.cho){ // 한글이 아닌 경우(공백 등)
+            showChar[index] = true;
+        }else{
+            li.onclick = () => {
+                li.textContent = (showChar[index] = !showChar[index]) ? li.dataset.char : li.dataset.cho;
+                showChar.filter(Boolean).length === chosungList.length && checkQuizAnswer()
+            };
+        }
     })
     updateRankGraph(gameState.scores)
 }
